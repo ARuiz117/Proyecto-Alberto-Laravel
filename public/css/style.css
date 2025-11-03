@@ -520,3 +520,49 @@ body {
   text-align: center;
   box-shadow: 0 0 10px #06d6a044;
 }
+
+/* Estilos para acciones de juegos */
+.juego-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-carrito {
+  background: linear-gradient(to right, #4CAF50 5%, #45a049 95%);
+  color: white;
+  width: 100%;
+}
+
+.btn-carrito:hover {
+  background: linear-gradient(to right, #45a049 5%, #4CAF50 95%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.6);
+}
+
+.btn-comprar {
+  background: linear-gradient(to right, #2196F3 5%, #1976D2 95%);
+  color: white;
+  width: 100%;
+}
+
+.btn-comprar:hover {
+  background: linear-gradient(to right, #1976D2 5%, #2196F3 95%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.6);
+}
+
+/* Badge para contador del carrito */
+.badge {
+  background: #f44336;
+  color: white;
+  border-radius: 50%;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 0.3rem;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}

@@ -50,11 +50,22 @@
                     </div>
                     <p>{{ $juego->descripcion }}</p>
                     <div class="precio">Precio: {{ number_format($juego->precio, 2) }} €</div>
-                    <form method="POST" action="{{ route('biblioteca.comprar') }}" @if(Auth::user()->saldo < $juego->precio) style="opacity:0.5; pointer-events:none;" title="Saldo insuficiente" @endif>
-                        @csrf
-                        <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                        <button class="btn" type="submit">Comprar</button>
-                    </form>
+                    <div class="juego-acciones">
+                        <form method="POST" action="{{ route('carrito.agregar') }}" style="display: inline;">
+                            @csrf
+                            <input type="hidden" name="juego_id" value="{{ $juego->id }}">
+                            <button class="btn btn-carrito" type="submit">
+                                <i class='bx bx-cart-add'></i> Añadir al carrito
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('biblioteca.comprar') }}" style="display: inline;" @if(Auth::user()->saldo < $juego->precio) style="opacity:0.5; pointer-events:none;" title="Saldo insuficiente" @endif>
+                            @csrf
+                            <input type="hidden" name="juego_id" value="{{ $juego->id }}">
+                            <button class="btn btn-comprar" type="submit" title="Comprar ahora">
+                                <i class='bx bx-shopping-bag'></i> Comprar ahora
+                            </button>
+                        </form>
+                    </div>
                 </article>
             @endforeach
         @endif

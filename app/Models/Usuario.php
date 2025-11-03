@@ -45,6 +45,12 @@ class Usuario extends Authenticatable
         return $this->hasMany(Resena::class, 'usuario_id');
     }
 
+    // Relación: Un usuario tiene muchos items en el carrito
+    public function carritos(): HasMany
+    {
+        return $this->hasMany(Carrito::class, 'usuario_id');
+    }
+
     // Método para verificar si es admin
     public function isAdmin(): bool
     {

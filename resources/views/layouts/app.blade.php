@@ -28,6 +28,15 @@
                     <div class="auth-buttons">
                         @auth
                             <a href="{{ route('biblioteca.index') }}" class="btn btn-primary">Biblioteca</a>
+                            <a href="{{ route('carrito.index') }}" class="btn btn-primary">
+                                <i class='bx bx-cart'></i> Carrito
+                                @php
+                                    $cantidadCarrito = Auth::user()->carritos()->count();
+                                @endphp
+                                @if($cantidadCarrito > 0)
+                                    <span class="badge">{{ $cantidadCarrito }}</span>
+                                @endif
+                            </a>
                             @if(Auth::user()->isAdmin())
                                 <a href="#" class="btn btn-primary">Admin</a>
                             @endif

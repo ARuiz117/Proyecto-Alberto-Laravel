@@ -28,7 +28,8 @@ class AuthController extends Controller
 
         $usuario = Usuario::where('nombre', $request->usuario)->first();
 
-        if ($usuario && Hash::check($request->clave, $usuario->clave)) {
+        // Comparación directa SIN encriptación (SOLO PARA DESARROLLO)
+        if ($usuario && $request->clave === $usuario->clave) {
             Auth::login($usuario);
             $request->session()->regenerate();
             
@@ -71,7 +72,7 @@ class AuthController extends Controller
         $usuario = Usuario::create([
             'nombre' => $request->usuario,
             'email' => $request->email,
-            'clave' => Hash::make($request->clave),
+            'clave' => $request->clave, // SIN encriptar (SOLO PARA DESARROLLO)
             'rol' => 'user',
             'saldo' => 100.00,
         ]);
