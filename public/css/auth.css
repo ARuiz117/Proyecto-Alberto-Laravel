@@ -1,0 +1,84 @@
+/* ============================================
+   AUTH.CSS - Autenticación
+   Contiene: Login, Registro
+   ============================================ */
+
+/* Hero section */
+.hero-section {
+  width: 100%;
+  min-height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: rgba(0,0,0,0.2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+.hero-content {
+  padding: 2rem 1rem;
+  color: #fff;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Formularios de Login y Registro */
+#login-form, #register-form {
+  max-width: 500px;
+  width: 90%;
+  background: linear-gradient(to bottom, #32383e, #1b2838);
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  border: 1px solid #417a9b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#login-form h2, #register-form h2 {
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  color: #66c0f4;
+  text-align: center;
+  width: 100%;
+}
+
+/* Sección de registro en login */
+.register-section {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #417a9b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.register-text {
+  color: #8F98A0;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.register-section .btn {
+  margin: 0;
+  width: auto;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #login-form, #register-form {
+    width: 100%;
+  }
+}

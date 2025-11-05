@@ -1,0 +1,123 @@
+/* ============================================
+   BIBLIOTECA.CSS - Biblioteca y Tienda
+   Contiene: Grid de juegos, Cards, Acciones
+   ============================================ */
+
+/* Grid de juegos */
+.biblioteca, .juegos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 20px 0;
+}
+
+/* Tarjetas de juegos */
+.juego-card {
+  background-color: #2a475e;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 10px #00000044;
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.juego-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px #00000088;
+}
+
+.juego-card h4 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #66c0f4;
+}
+
+.juego-card p {
+  font-size: 14px;
+  color: #dfe3e6;
+  height: 70px;
+  overflow: hidden;
+  margin: 0 0 10px 0;
+}
+
+/* Contenedor de imagen */
+.img-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  margin: 15px 0;
+}
+
+.img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+}
+
+.img-container img:hover {
+  transform: scale(1.07);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
+}
+
+/* Precio */
+.precio {
+  font-weight: bold;
+  color: #a4dffd;
+  margin-top: auto;
+  font-size: 17px;
+}
+
+/* Acciones de juegos */
+.juego-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-carrito {
+  background: linear-gradient(to right, #4CAF50 5%, #45a049 95%);
+  color: white;
+  width: 100%;
+}
+
+.btn-carrito:hover {
+  background: linear-gradient(to right, #45a049 5%, #4CAF50 95%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.6);
+}
+
+.btn-comprar {
+  background: linear-gradient(to right, #2196F3 5%, #1976D2 95%);
+  color: white;
+  width: 100%;
+}
+
+.btn-comprar:hover {
+  background: linear-gradient(to right, #1976D2 5%, #2196F3 95%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .biblioteca, .juegos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .biblioteca, .juegos-grid {
+    grid-template-columns: 1fr;
+  }
+}

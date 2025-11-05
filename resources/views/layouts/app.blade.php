@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Steam HRG')</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+    
+    <!-- CSS Modular -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/components.css') }}" />
+    @yield('styles')
+    
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="{{ asset('js/accessibility.js') }}" defer></script>
     <script src="{{ asset('js/session-manager.js') }}" defer></script>

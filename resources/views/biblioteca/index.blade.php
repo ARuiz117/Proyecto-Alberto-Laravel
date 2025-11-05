@@ -2,6 +2,10 @@
 
 @section('title', 'Mi Biblioteca - Steam HRG')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/biblioteca.css') }}" />
+@endsection
+
 @section('content')
 
 <div class="main">

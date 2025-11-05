@@ -1,0 +1,176 @@
+/* ============================================
+   COMPONENTS.CSS - Componentes Reutilizables
+   Contiene: Botones, Formularios, Mensajes, Badge
+   ============================================ */
+
+/* Botones Base */
+.btn {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0.5rem auto;
+  user-select: none;
+  width: 50%;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #66c0f4 5%, #417a9b 95%);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #417a9b 5%, #66c0f4 95%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(66, 122, 155, 0.8);
+}
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.4);
+  color: #66c0f4;
+  border: 1px solid #417a9b;
+  width: auto;
+  padding: 0.7rem 1.2rem;
+}
+
+.btn-secondary:hover {
+  background: #66c0f4;
+  color: #171a21;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(66, 122, 155, 0.4);
+}
+
+.btn-success {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.btn-success:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-danger {
+  background: #f44336;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-danger:hover {
+  background: #da190b;
+}
+
+.btn-block {
+  width: 100%;
+  text-align: center;
+}
+
+/* Formularios */
+.form-input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #417a9b;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #66c0f4;
+  outline: none;
+  background: rgba(102, 192, 244, 0.1);
+  box-shadow: 0 0 5px rgba(102, 192, 244, 0.5);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  width: 100%;
+}
+
+.button-container .btn {
+  margin: 0 auto;
+  width: auto;
+  min-width: 150px;
+  display: block;
+}
+
+/* Mensajes de Estado */
+.error {
+  background-color: #e63946;
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  box-shadow: 0 0 10px #e6394644;
+}
+
+.error-msg {
+  color: #ff6b6b;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.mensaje {
+  background-color: #06d6a0;
+  padding: 15px;
+  border-radius: 8px;
+  color: #034d3a;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  box-shadow: 0 0 10px #06d6a044;
+}
+
+.info {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+  border-left: 4px solid #2196F3;
+}
+
+/* Badge para contador */
+.badge {
+  background: #f44336;
+  color: white;
+  border-radius: 50%;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-left: 0.3rem;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .btn {
+    width: 100%;
+  }
+}

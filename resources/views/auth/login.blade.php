@@ -2,6 +2,10 @@
 
 @section('title', 'Iniciar Sesión - Steam HRG')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}" />
+@endsection
+
 @section('content')
 <section class="hero-section">
     <div class="hero-content">
