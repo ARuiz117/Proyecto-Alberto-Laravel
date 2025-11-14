@@ -1,0 +1,289 @@
+================================================================================
+                    FUNCIONAMIENTO DEL PROYECTO STEAM-LARAVEL
+================================================================================
+
+Este es un proyecto Laravel que simula una plataforma similar a Steam.
+Utiliza el patrón MVC (Modelo-Vista-Controlador) con rutas definidas en routes/web.php
+
+================================================================================
+1. AUTENTICACIÓN Y USUARIOS
+================================================================================
+
+MODELO: app/Models/Usuario.php
+- Tabla: usuarios
+- Campos principales:
+  * nombre: Nombre de usuario (único)
+  * email: Correo electrónico (único)
+  * clave: Contraseña encriptada con bcrypt
+  * rol: Tipo de usuario ('user' o 'admin')
+  * saldo: Dinero disponible del usuario
+
+- Métodos importantes:
+  * getAuthPassword(): Retorna el campo 'clave' para autenticación
+  * setClaveAttribute(): Encripta automáticamente la contraseña cuando se asigna
+  * isAdmin(): Verifica si el usuario es administrador
+  * bibliotecas(): Relación con los juegos comprados
+  * juegos(): Relación muchos-a-muchos con juegos
+  * resenas(): Relación con reseñas del usuario
+  * carritos(): Relación con items en el carrito
+
+CONTROLADOR: app/Http/Controllers/AuthController.php
+
+showLogin()
+- Muestra el formulario de login
+- Si ya está autenticado, redirige a biblioteca
+
+login(Request $request)
+- Valida que 'usuario' y 'clave' sean requeridos
+- Busca el usuario por nombre en la tabla 'usuarios'
+- Usa Hash::check() para verificar la contraseña encriptada
+- Si es correcto, inicia sesión con Auth::login()
+- Regenera la sesión por seguridad
+- Si falla, retorna error
+
+showRegister()
+- Muestra el formulario de registro
+- Si ya está autenticado, redirige a biblioteca
+
+register(Request $request)
+- Valida:
+  * usuario: Mínimo 3 caracteres, único en tabla 'usuarios'
+  * email: Formato válido, único en tabla 'usuarios'
+  * clave: Mínimo 6 caracteres, confirmada (clave_confirmation)
+- Crea nuevo usuario con rol 'user' y saldo inicial de 100.00
+- La contraseña se encripta automáticamente por setClaveAttribute()
+- Redirige al login con mensaje de éxito
+
+logout(Request $request)
+- Cierra la sesión del usuario
+- Invalida y regenera el token de sesión
+- Redirige al login
+
+RUTAS DE AUTENTICACIÓN: routes/web.php
+GET  /login              → AuthController@showLogin
+POST /login              → AuthController@login
+GET  /registro           → AuthController@showRegister
+POST /registro           → AuthController@register
+POST /logout             → AuthController@logout
+
+================================================================================
+2. BIBLIOTECA (Juegos Comprados)
+================================================================================
+
+MODELO: app/Models/Biblioteca.php
+- Tabla: bibliotecas
+- Campos:
+  * usuario_id: ID del usuario propietario
+  * juego_id: ID del juego en la biblioteca
+  * timestamps: Fecha de compra
+
+- Relaciones:
+  * Pertenece a Usuario
+  * Pertenece a Juego
+
+CONTROLADOR: app/Http/Controllers/BibliotecaController.php
+
+index()
+- Obtiene todos los juegos del usuario autenticado
+- Pasa los juegos a la vista 'biblioteca/index.blade.php'
+- Solo accesible si está autenticado (middleware 'auth')
+
+comprar(Request $request)
+- Valida que 'juego_id' sea requerido
+- Obtiene el juego de la tabla 'juegos'
+- Verifica que el usuario tenga saldo suficiente
+- Verifica que no haya comprado el juego antes
+- Resta el precio del saldo del usuario
+- Crea registro en 'bibliotecas'
+- Retorna respuesta JSON con éxito o error
+
+devolver(Request $request)
+- Valida que 'juego_id' sea requerido
+- Verifica que el juego esté en la biblioteca del usuario
+- Devuelve el dinero al saldo del usuario
+- Elimina el registro de 'bibliotecas'
+- Retorna respuesta JSON
+
+RUTAS DE BIBLIOTECA: routes/web.php
+GET  /biblioteca                 → BibliotecaController@index
+POST /biblioteca/comprar         → BibliotecaController@comprar
+POST /biblioteca/devolver        → BibliotecaController@devolver
+
+================================================================================
+3. CARRITO DE COMPRAS
+================================================================================
+
+MODELO: app/Models/Carrito.php
+- Tabla: carritos
+- Campos:
+  * usuario_id: ID del usuario propietario
+  * juego_id: ID del juego en el carrito
+  * cantidad: Cantidad de items (siempre 1 en este caso)
+  * timestamps: Fecha de adición
+
+- Relaciones:
+  * Pertenece a Usuario
+  * Pertenece a Juego
+
+CONTROLADOR: app/Http/Controllers/CarritoController.php
+
+index()
+- Obtiene todos los items del carrito del usuario
+- Calcula el total sumando precios de juegos
+- Pasa items y total a la vista 'carrito/index.blade.php'
+
+agregar(Request $request)
+- Valida que 'juego_id' sea requerido
+- Verifica que el juego no esté ya en el carrito
+- Verifica que el usuario no haya comprado el juego
+- Agrega el juego al carrito
+- Retorna respuesta JSON
+
+eliminar(Request $request)
+- Valida que 'juego_id' sea requerido
+- Elimina el juego del carrito del usuario
+- Retorna respuesta JSON
+
+vaciar(Request $request)
+- Elimina todos los items del carrito del usuario
+- Retorna respuesta JSON
+
+comprar(Request $request)
+- Obtiene todos los items del carrito
+- Verifica que el usuario tenga saldo suficiente para todos
+- Verifica que no haya comprado ninguno de los juegos
+- Resta el total del saldo
+- Crea registros en 'bibliotecas' para cada juego
+- Vacía el carrito
+- Retorna respuesta JSON
+
+RUTAS DEL CARRITO: routes/web.php
+GET  /carrito                    → CarritoController@index
+POST /carrito/agregar            → CarritoController@agregar
+POST /carrito/eliminar           → CarritoController@eliminar
+POST /carrito/vaciar             → CarritoController@vaciar
+POST /carrito/comprar            → CarritoController@comprar
+
+================================================================================
+4. JUEGOS
+================================================================================
+
+MODELO: app/Models/Juego.php
+- Tabla: juegos
+- Campos:
+  * titulo: Nombre del juego
+  * descripcion: Descripción del juego
+  * precio: Precio en dinero
+  * imagen: URL de la imagen
+  * genero: Género del juego
+  * fecha_lanzamiento: Fecha de lanzamiento
+
+- Relaciones:
+  * Muchos-a-muchos con Usuario a través de 'bibliotecas'
+  * Tiene muchas Resenas
+
+================================================================================
+5. RESEÑAS
+================================================================================
+
+MODELO: app/Models/Resena.php
+- Tabla: resenas
+- Campos:
+  * usuario_id: ID del usuario que hace la reseña
+  * juego_id: ID del juego reseñado
+  * calificacion: Puntuación (1-5)
+  * comentario: Texto de la reseña
+  * timestamps: Fecha de creación
+
+- Relaciones:
+  * Pertenece a Usuario
+  * Pertenece a Juego
+
+================================================================================
+6. VISTAS (Blade Templates)
+================================================================================
+
+resources/views/auth/login.blade.php
+- Formulario para iniciar sesión
+- Campos: usuario, clave
+- Envía POST a /login
+
+resources/views/auth/register.blade.php
+- Formulario para registrarse
+- Campos: usuario, email, clave, clave_confirmation
+- Envía POST a /registro
+
+resources/views/biblioteca/index.blade.php
+- Muestra todos los juegos comprados del usuario
+- Botón para devolver cada juego
+- Enlace al carrito
+
+resources/views/carrito/index.blade.php
+- Muestra items en el carrito
+- Botón para eliminar cada item
+- Botón para vaciar carrito
+- Botón para comprar todo
+- Muestra total a pagar
+
+================================================================================
+7. FLUJO DE COMPRA
+================================================================================
+
+1. Usuario inicia sesión (AuthController@login)
+2. Ve juegos disponibles en la tienda
+3. Agrega juegos al carrito (CarritoController@agregar)
+4. Va al carrito y compra (CarritoController@comprar)
+5. El dinero se resta del saldo
+6. Los juegos aparecen en su biblioteca (BibliotecaController@index)
+7. Puede devolver juegos (BibliotecaController@devolver) y recuperar dinero
+
+================================================================================
+8. SEGURIDAD
+================================================================================
+
+- Middleware 'auth': Protege rutas que requieren autenticación
+- Hash::check(): Verifica contraseñas encriptadas
+- bcrypt: Encriptación de contraseñas en setClaveAttribute()
+- Session regeneration: Previene session fixation attacks
+- Validación: Todos los inputs se validan en los controladores
+
+================================================================================
+9. FLUJO DE DATOS
+================================================================================
+
+Usuario → Ruta (web.php) → Controlador → Modelo → Base de Datos
+                              ↓
+                            Vista (Blade)
+                              ↓
+                        Respuesta HTML/JSON
+
+================================================================================
+10. ENCRIPTACIÓN DE CONTRASEÑAS
+================================================================================
+
+1. Al registrarse, el usuario ingresa la contraseña en texto plano
+2. El controlador pasa la contraseña al modelo
+3. El método setClaveAttribute() en el modelo encripta con bcrypt()
+4. Se guarda encriptada en la base de datos
+5. Al iniciar sesión, se usa Hash::check() para comparar
+6. Hash::check() encripta el input y lo compara con el hash guardado
+
+================================================================================
+RESUMEN DE ARCHIVOS CLAVE
+================================================================================
+
+Archivo                                    | Propósito
+-------------------------------------------|------------------------------------------
+routes/web.php                             | Define todas las rutas del proyecto
+app/Http/Controllers/AuthController.php    | Maneja login, registro, logout
+app/Http/Controllers/BibliotecaController  | Maneja juegos comprados
+app/Http/Controllers/CarritoController.php | Maneja carrito de compras
+app/Models/Usuario.php                     | Modelo de usuario con encriptación
+app/Models/Juego.php                       | Modelo de juego
+app/Models/Biblioteca.php                  | Modelo de relación usuario-juego
+app/Models/Carrito.php                     | Modelo de carrito
+app/Models/Resena.php                      | Modelo de reseñas
+
+================================================================================
+FIN DEL DOCUMENTO
+================================================================================

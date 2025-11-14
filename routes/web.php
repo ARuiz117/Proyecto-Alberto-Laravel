@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BibliotecaController;
 use App\Http\Controllers\CarritoController;
+use App\Models\Usuario;
 
 // Redirigir raíz al login
 Route::get('/', function () {
@@ -31,3 +33,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
     Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
 });
+
+// RUTA TEMPORAL PARA RESETEAR CONTRASEÑAS (ELIMINAR DESPUÉS DE USAR)
+Route::get('/reset-password/{email}/{new_password}', function($email, $new_password) {
+    $usuario = Usuario::where('email', $email)->first();
+    if ($usuario) {
+        $usuario->clave = $new_password; // Se encripta automáticamente
+        $usuario->save();
+        return "Contraseña actualizada para: " . $usuario->nombre . " - Ahora puedes iniciar sesión con la contraseña: " . $new_password;
+    }
+    return "Usuario no encontrado";
+});
+// FIN RUTA TEMPORAL
