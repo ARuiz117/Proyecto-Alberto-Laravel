@@ -81,8 +81,8 @@
                 <div class="resumen-acciones">
                     <form method="POST" action="{{ route('carrito.comprar') }}" 
                           @if(Auth::user()->saldo < $total) 
+                              class="form-disabled"
                               onsubmit="return false;" 
-                              style="opacity: 0.5; cursor: not-allowed;" 
                               title="Saldo insuficiente"
                           @else
                               onsubmit="return confirm('¿Confirmar la compra de {{ $itemsCarrito->count() }} juego(s) por {{ number_format($total, 2) }} €?');"
