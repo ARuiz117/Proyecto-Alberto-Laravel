@@ -72,7 +72,7 @@ class AuthController extends Controller
         $usuario = Usuario::create([
             'nombre' => $request->usuario,
             'email' => $request->email,
-            'clave' => $request->clave, // Se encripta automáticamente en el modelo
+            'clave' => Hash::make($request->clave),
             'rol' => 'user',
             'saldo' => 100.00,
         ]);

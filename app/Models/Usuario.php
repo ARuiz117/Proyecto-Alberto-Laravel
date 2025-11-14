@@ -63,9 +63,4 @@ class Usuario extends Authenticatable
         return $this->clave;
     }
 
-    // Encriptar la contraseña automáticamente cuando se asigne
-    public function setClaveAttribute($value)
-    {
-        $this->attributes['clave'] = bcrypt($value);
-    }
 }
