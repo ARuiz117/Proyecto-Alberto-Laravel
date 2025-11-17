@@ -14,19 +14,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Crear tabla usuarios si no existe
-        if (!Schema::hasTable('usuarios')) {
-            Schema::create('usuarios', function (Blueprint $table) {
-                $table->id();
-                $table->string('nombre', 50)->unique();
-                $table->string('email', 255)->unique();
-                $table->string('clave', 255);
-                $table->enum('rol', ['user', 'admin'])->default('user');
-                $table->decimal('saldo', 10, 2)->default(100.00);
-                $table->timestamps();
-            });
-        }
-
         // Crear tabla sessions si no existe
         if (!Schema::hasTable('sessions')) {
             Schema::create('sessions', function (Blueprint $table) {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Carrito;
 
 class Juego extends Model
 {
@@ -21,12 +22,6 @@ class Juego extends Model
         'precio' => 'decimal:2',
     ];
 
-    // Relación: Un juego tiene muchas bibliotecas
-    public function bibliotecas(): HasMany
-    {
-        return $this->hasMany(Biblioteca::class, 'juego_id');
-    }
-
     // Relación: Un juego pertenece a muchos usuarios a través de bibliotecas
     public function usuarios(): BelongsToMany
     {
@@ -38,5 +33,11 @@ class Juego extends Model
     public function resenas(): HasMany
     {
         return $this->hasMany(Resena::class, 'juego_id');
+    }
+
+    // Relación: Un juego tiene muchos items en carritos
+    public function carritos(): HasMany
+    {
+        return $this->hasMany(Carrito::class, 'juego_id');
     }
 }

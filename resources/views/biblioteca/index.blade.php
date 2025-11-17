@@ -41,38 +41,13 @@
         @endif
     </section>
 
-    <section class="juegos-grid">
-        <h3>Juegos Disponibles para Comprar</h3>
-        @if($juegosDisponibles->isEmpty())
-            <p>Ya tienes todos los juegos disponibles.</p>
-        @else
-            @foreach($juegosDisponibles as $juego)
-                <article class="juego-card">
-                    <h4>{{ $juego->titulo }}</h4>
-                    <div class="img-container">
-                        <img loading="lazy" decoding="async" src="{{ $juego->imagen_url }}" alt="Portada de {{ $juego->titulo }}">
-                    </div>
-                    <p>{{ $juego->descripcion }}</p>
-                    <div class="precio">Precio: {{ number_format($juego->precio, 2) }} €</div>
-                    <div class="juego-acciones">
-                        <form method="POST" action="{{ route('carrito.agregar') }}" style="display: inline;">
-                            @csrf
-                            <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                            <button class="btn btn-carrito" type="submit">
-                                <i class='bx bx-cart-add'></i> Añadir al carrito
-                            </button>
-                        </form>
-                        <form method="POST" action="{{ route('biblioteca.comprar') }}" style="display: inline;" @if(Auth::user()->saldo < $juego->precio) class="form-disabled" title="Saldo insuficiente" @endif>
-                            @csrf
-                            <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                            <button class="btn btn-comprar" type="submit" @if(Auth::user()->saldo < $juego->precio) disabled @endif title="Comprar ahora">
-                                <i class='bx bx-shopping-bag'></i> Comprar ahora
-                            </button>
-                        </form>
-                    </div>
-                </article>
-            @endforeach
-        @endif
+    <section class="acciones-biblioteca" style="margin-top: 30px; display: flex; gap: 10px;">
+        <a href="{{ route('tienda.index') }}" class="btn">
+            <i class='bx bx-store'></i> Ir a la tienda
+        </a>
+        <a href="{{ route('carrito.index') }}" class="btn">
+            <i class='bx bx-cart'></i> Ver carrito
+        </a>
     </section>
 </div>
 @endsection

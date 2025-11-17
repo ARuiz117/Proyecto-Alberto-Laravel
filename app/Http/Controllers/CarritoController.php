@@ -79,11 +79,7 @@ class CarritoController extends Controller
         
         $itemCarrito = Carrito::where('usuario_id', $usuario->id)
             ->where('juego_id', $request->juego_id)
-            ->first();
-
-        if (!$itemCarrito) {
-            return back()->with('error', 'Este juego no está en tu carrito.');
-        }
+            ->firstOrFail();
 
         $itemCarrito->delete();
 

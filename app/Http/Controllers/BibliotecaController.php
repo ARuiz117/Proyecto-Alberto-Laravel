@@ -15,18 +15,15 @@ class BibliotecaController extends Controller
         $this->middleware('auth');
     }
 
-    // Mostrar biblioteca y juegos disponibles
+    // Mostrar biblioteca del usuario
     public function index()
     {
         $usuario = Auth::user();
         
         // Obtener juegos en la biblioteca del usuario
-        $misJuegos = $usuario->juegos()->get();
+        $misJuegos = $usuario->juegos()->paginate(12);
         
-        // Obtener juegos disponibles (no comprados)
-        $juegosDisponibles = Juego::whereNotIn('id', $misJuegos->pluck('id'))->get();
-        
-        return view('biblioteca.index', compact('misJuegos', 'juegosDisponibles'));
+        return view('biblioteca.index', compact('misJuegos'));
     }
 
     // Comprar un juego

@@ -32,6 +32,7 @@
                 <div class="header-controls">
                     <div class="auth-buttons">
                         @auth
+                            <a href="{{ route('tienda.index') }}" class="btn btn-primary">Tienda</a>
                             <a href="{{ route('biblioteca.index') }}" class="btn btn-primary">Biblioteca</a>
                             <a href="{{ route('carrito.index') }}" class="btn btn-primary">
                                 <i class='bx bx-cart'></i> Carrito
@@ -43,7 +44,7 @@
                                 @endif
                             </a>
                             @if(Auth::user()->isAdmin())
-                                <a href="#" class="btn btn-primary">Admin</a>
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Admin</a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                                 @csrf
