@@ -28,7 +28,7 @@
                 <article class="juego-card">
                     <h4>{{ $juego->titulo }}</h4>
                     <div class="img-container">
-                        <img loading="lazy" decoding="async" src="{{ $juego->imagen_url }}" alt="Portada de {{ $juego->titulo }}">
+                        <img loading="lazy" decoding="async" src="/imagenes/{{ $juego->imagen_url }}" alt="Portada de {{ $juego->titulo }}">
                     </div>
                     <p>{{ $juego->descripcion }}</p>
                     <form method="POST" action="{{ route('biblioteca.devolver') }}" onsubmit="return confirm('¿Seguro que quieres devolver este juego?');">

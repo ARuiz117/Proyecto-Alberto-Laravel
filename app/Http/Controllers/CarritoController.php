@@ -110,10 +110,22 @@ class CarritoController extends Controller
             return back()->with('error', 'Tu carrito está vacío.');
         }
 
-        // Calcular total
-        $total = $itemsCarrito->sum(function ($item) {
-            return $item->juego->precio * $item->cantidad;
-        });
+        // Calcular total solo de juegos que no tiene ya
+        $total = 0;
+        $juegosAComprar = [];
+        
+        foreach ($itemsCarrito as $item) {
+            // Verificar que no lo tenga ya en la biblioteca
+            if (!$usuario->juegos()->where('juego_id', $item->juego_id)->exists()) {
+                $total += $item->juego->precio * $item->cantidad;
+                $juegosAComprar[] = $item;
+            }
+        }
+
+        // Si no hay juegos nuevos para comprar
+        if (empty($juegosAComprar)) {
+            return back()->with('error', 'Todos los juegos del carrito ya están en tu biblioteca.');
+        }
 
         // Verificar saldo
         if ($usuario->saldo < $total) {
@@ -121,24 +133,21 @@ class CarritoController extends Controller
         }
 
         // Realizar la compra en una transacción
-        DB::transaction(function () use ($usuario, $itemsCarrito, $total) {
-            foreach ($itemsCarrito as $item) {
-                // Verificar que no lo tenga ya en la biblioteca
-                if (!$usuario->juegos()->where('juego_id', $item->juego_id)->exists()) {
-                    // Añadir a la biblioteca
-                    Biblioteca::create([
-                        'usuario_id' => $usuario->id,
-                        'juego_id' => $item->juego_id,
-                    ]);
-                }
+        DB::transaction(function () use ($usuario, $juegosAComprar, $total) {
+            foreach ($juegosAComprar as $item) {
+                // Añadir a la biblioteca
+                Biblioteca::create([
+                    'usuario_id' => $usuario->id,
+                    'juego_id' => $item->juego_id,
+                ]);
+                
+                // Eliminar del carrito
+                $item->delete();
             }
 
             // Actualizar saldo
             $usuario->saldo -= $total;
             $usuario->save();
-
-            // Vaciar el carrito
-            Carrito::where('usuario_id', $usuario->id)->delete();
         });
 
         return redirect()->route('biblioteca.index')->with('success', '¡Compra realizada con éxito! Los juegos se han añadido a tu biblioteca.');

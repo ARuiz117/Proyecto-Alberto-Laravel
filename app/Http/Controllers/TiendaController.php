@@ -19,7 +19,7 @@ class TiendaController extends Controller
         $usuario = Auth::user();
         
         // Obtener IDs de juegos que el usuario ya tiene
-        $juegosComprados = $usuario->juegos()->pluck('id')->toArray();
+        $juegosComprados = $usuario->juegos()->pluck('juegos.id')->toArray();
         
         // Obtener juegos disponibles (no comprados)
         $juegos = Juego::whereNotIn('id', $juegosComprados)->paginate(12);
@@ -50,7 +50,7 @@ class TiendaController extends Controller
         ]);
 
         $usuario = Auth::user();
-        $juegosComprados = $usuario->juegos()->pluck('id')->toArray();
+        $juegosComprados = $usuario->juegos()->pluck('juegos.id')->toArray();
         $query = $request->input('q');
         
         $juegos = Juego::where('titulo', 'like', "%{$query}%")

@@ -2,8 +2,14 @@
                     FUNCIONAMIENTO DEL PROYECTO STEAM-LARAVEL
 ================================================================================
 
-Este es un proyecto Laravel que simula una plataforma similar a Steam.
+Este es un proyecto Laravel 12 que simula una plataforma similar a Steam.
 Utiliza el patrón MVC (Modelo-Vista-Controlador) con rutas definidas en routes/web.php
+
+VERSIÓN ACTUAL: 2.0 - Sistema de Imágenes Locales
+- Imágenes almacenadas en public/imagenes/
+- BD: Campo imagen_url guarda solo el nombre del archivo
+- Vistas: Construyen ruta /imagenes/{{ imagen_url }}
+- Panel de administración completamente funcional
 
 ================================================================================
 1. AUTENTICACIÓN Y USUARIOS
@@ -165,7 +171,153 @@ POST /carrito/vaciar             → CarritoController@vaciar
 POST /carrito/comprar            → CarritoController@comprar
 
 ================================================================================
-4. JUEGOS
+4. TIENDA DE JUEGOS
+================================================================================
+
+CONTROLADOR: app/Http/Controllers/TiendaController.php
+
+index()
+- Obtiene todos los juegos disponibles (no comprados por el usuario)
+- Pasa los juegos a la vista 'tienda/index.blade.php'
+- Solo accesible si está autenticado (middleware 'auth')
+
+show($id)
+- Muestra detalles de un juego específico
+- Verifica si el usuario ya tiene el juego
+- Obtiene reseñas del juego
+- Pasa datos a la vista 'tienda/show.blade.php'
+
+buscar(Request $request)
+- Busca juegos por título o descripción
+- Filtra juegos no comprados por el usuario
+- Retorna resultados paginados
+
+RUTAS DE TIENDA: routes/web.php
+GET  /tienda                    → TiendaController@index
+GET  /tienda/juego/{id}         → TiendaController@show
+GET  /tienda/buscar             → TiendaController@buscar
+
+================================================================================
+5. RESEÑAS
+================================================================================
+
+CONTROLADOR: app/Http/Controllers/ResenaController.php
+
+store(Request $request)
+- Valida que el usuario sea propietario del juego
+- Crea una nueva reseña con calificación y comentario
+- Retorna respuesta JSON
+
+update(Request $request, $id)
+- Valida que el usuario sea propietario de la reseña
+- Actualiza calificación y comentario
+- Retorna respuesta JSON
+
+destroy($id)
+- Valida que el usuario sea propietario de la reseña
+- Elimina la reseña
+- Retorna respuesta JSON
+
+RUTAS DE RESEÑAS: routes/web.php
+POST   /resena/crear            → ResenaController@store
+PUT    /resena/{id}             → ResenaController@update
+DELETE /resena/{id}             → ResenaController@destroy
+
+================================================================================
+6. PANEL DE ADMINISTRACIÓN
+================================================================================
+
+MIDDLEWARE: app/Http/Middleware/IsAdmin.php
+- Verifica que el usuario tenga rol 'admin'
+- Protege todas las rutas de administración
+
+CONTROLADOR: app/Http/Controllers/AdminController.php
+
+dashboard()
+- Muestra panel principal de administración
+- Solo accesible para usuarios con rol 'admin'
+
+--- GESTIÓN DE USUARIOS ---
+usuarios()
+- Lista todos los usuarios del sistema
+
+editarUsuario($id)
+- Muestra formulario para editar usuario
+
+actualizarUsuario(Request $request, $id)
+- Actualiza datos del usuario (nombre, email, rol, saldo)
+
+eliminarUsuario($id)
+- Elimina un usuario del sistema
+
+--- GESTIÓN DE JUEGOS ---
+juegos()
+- Lista todos los juegos del sistema
+
+crearJuego()
+- Muestra formulario para crear nuevo juego
+
+guardarJuego(Request $request)
+- Valida datos del juego e imagen
+- Sube imagen a public/imagenes/
+- Guarda solo el nombre del archivo en BD
+- Crea registro en tabla 'juegos'
+
+editarJuego($id)
+- Muestra formulario para editar juego
+- Muestra imagen actual
+
+actualizarJuego(Request $request, $id)
+- Actualiza datos del juego
+- Si se sube nueva imagen:
+  * Elimina imagen anterior (si fue subida por admin)
+  * Sube nueva imagen a public/imagenes/
+  * Guarda solo el nombre en BD
+
+eliminarJuego($id)
+- Elimina juego del sistema
+- Elimina imagen asociada si existe
+
+RUTAS DE ADMINISTRACIÓN: routes/web.php
+GET    /admin/dashboard         → AdminController@dashboard
+GET    /admin/usuarios          → AdminController@usuarios
+GET    /admin/usuarios/{id}/editar → AdminController@editarUsuario
+PUT    /admin/usuarios/{id}     → AdminController@actualizarUsuario
+DELETE /admin/usuarios/{id}     → AdminController@eliminarUsuario
+GET    /admin/juegos           → AdminController@juegos
+GET    /admin/juegos/crear     → AdminController@crearJuego
+POST   /admin/juegos           → AdminController@guardarJuego
+GET    /admin/juegos/{id}/editar → AdminController@editarJuego
+PUT    /admin/juegos/{id}      → AdminController@actualizarJuego
+DELETE /admin/juegos/{id}      → AdminController@eliminarJuego
+
+================================================================================
+7. SISTEMA DE IMÁGENES
+================================================================================
+
+ALMACENAMIENTO:
+- Directorio: public/imagenes/
+- Formato: JPEG, PNG, GIF
+- Tamaño máximo: 2MB
+- Nombres: timestamp + nombre original (ej: 1731867234_THE_WITCHER_3_WILD_HUNT.jpg)
+
+BASE DE DATOS:
+- Campo: imagen_url
+- Contenido: Solo el nombre del archivo (ej: THE_WITCHER_3_WILD_HUNT.jpg)
+- Nota: Las imágenes del seeder no tienen timestamp (son imágenes originales)
+
+VISTAS:
+- Tienda: src="/imagenes/{{ $juego->imagen_url }}"
+- Biblioteca: src="/imagenes/{{ $juego->imagen_url }}"
+- Admin (editar): src="/imagenes/{{ $juego->imagen_url }}"
+
+ELIMINACIÓN:
+- AdminController verifica si el nombre tiene timestamp
+- Si tiene timestamp (fue subida por admin), se elimina el archivo
+- Si no tiene timestamp (imagen original), se preserva
+
+================================================================================
+8. JUEGOS
 ================================================================================
 
 MODELO: app/Models/Juego.php
@@ -174,16 +326,15 @@ MODELO: app/Models/Juego.php
   * titulo: Nombre del juego
   * descripcion: Descripción del juego
   * precio: Precio en dinero
-  * imagen: URL de la imagen
-  * genero: Género del juego
-  * fecha_lanzamiento: Fecha de lanzamiento
+  * imagen_url: Nombre del archivo de imagen (ej: THE_WITCHER_3_WILD_HUNT.jpg)
 
 - Relaciones:
   * Muchos-a-muchos con Usuario a través de 'bibliotecas'
   * Tiene muchas Resenas
+  * Tiene muchos items en Carrito
 
 ================================================================================
-5. RESEÑAS
+9. MODELOS
 ================================================================================
 
 MODELO: app/Models/Resena.php
@@ -200,7 +351,7 @@ MODELO: app/Models/Resena.php
   * Pertenece a Juego
 
 ================================================================================
-6. VISTAS (Blade Templates)
+10. VISTAS (Blade Templates)
 ================================================================================
 
 resources/views/auth/login.blade.php
@@ -215,8 +366,46 @@ resources/views/auth/register.blade.php
 
 resources/views/biblioteca/index.blade.php
 - Muestra todos los juegos comprados del usuario
+- Muestra imagen de cada juego desde /imagenes/
 - Botón para devolver cada juego
-- Enlace al carrito
+- Enlace a tienda y carrito
+
+resources/views/tienda/index.blade.php
+- Muestra catálogo de juegos disponibles
+- Muestra imagen de cada juego desde /imagenes/
+- Búsqueda de juegos
+- Botones para agregar al carrito o comprar directamente
+
+resources/views/tienda/show.blade.php
+- Muestra detalles completos de un juego
+- Muestra imagen desde /imagenes/
+- Sección de reseñas con formulario para crear/editar
+- Botones para comprar o agregar al carrito
+
+resources/views/admin/dashboard.blade.php
+- Panel principal de administración
+- Enlaces a gestión de usuarios y juegos
+
+resources/views/admin/juegos/index.blade.php
+- Lista todos los juegos
+- Botones para crear, editar y eliminar
+
+resources/views/admin/juegos/create.blade.php
+- Formulario para crear nuevo juego
+- Input de archivo para subir imagen
+
+resources/views/admin/juegos/edit.blade.php
+- Formulario para editar juego
+- Muestra imagen actual desde /imagenes/
+- Input de archivo para cambiar imagen
+
+resources/views/admin/usuarios/index.blade.php
+- Lista todos los usuarios
+- Botones para editar y eliminar
+
+resources/views/admin/usuarios/edit.blade.php
+- Formulario para editar usuario
+- Campos: nombre, email, rol, saldo
 
 resources/views/carrito/index.blade.php
 - Muestra items en el carrito
@@ -226,39 +415,49 @@ resources/views/carrito/index.blade.php
 - Muestra total a pagar
 
 ================================================================================
-7. FLUJO DE COMPRA
+11. FLUJO DE COMPRA
 ================================================================================
 
 1. Usuario inicia sesión (AuthController@login)
-2. Ve juegos disponibles en la tienda
-3. Agrega juegos al carrito (CarritoController@agregar)
-4. Va al carrito y compra (CarritoController@comprar)
-5. El dinero se resta del saldo
-6. Los juegos aparecen en su biblioteca (BibliotecaController@index)
-7. Puede devolver juegos (BibliotecaController@devolver) y recuperar dinero
+2. Ve catálogo en /tienda (TiendaController@index)
+3. Puede ver detalles en /tienda/juego/{id} (TiendaController@show)
+4. Agrega juegos al carrito (CarritoController@agregar)
+5. Va a /carrito y compra (CarritoController@comprar)
+6. El dinero se resta del saldo
+7. Los juegos aparecen en /biblioteca (BibliotecaController@index)
+8. Puede escribir reseñas (ResenaController@store)
+9. Puede devolver juegos (BibliotecaController@devolver) y recuperar dinero
 
 ================================================================================
-8. SEGURIDAD
+12. SEGURIDAD
 ================================================================================
 
 - Middleware 'auth': Protege rutas que requieren autenticación
+- Middleware 'admin': Protege rutas de administración (IsAdmin.php)
 - Hash::check(): Verifica contraseñas encriptadas
 - bcrypt: Encriptación de contraseñas en setClaveAttribute()
 - Session regeneration: Previene session fixation attacks
 - Validación: Todos los inputs se validan en los controladores
+- Validación de imágenes: Solo JPEG, PNG, GIF, máximo 2MB
+- Verificación de propiedad: Solo el propietario puede editar/eliminar
 
 ================================================================================
-9. FLUJO DE DATOS
+13. FLUJO DE DATOS
 ================================================================================
 
-Usuario → Ruta (web.php) → Controlador → Modelo → Base de Datos
-                              ↓
-                            Vista (Blade)
-                              ↓
-                        Respuesta HTML/JSON
+Usuario → Ruta (web.php) → Middleware (auth/admin) → Controlador → Modelo → Base de Datos
+                                                           ↓
+                                                       Vista (Blade)
+                                                           ↓
+                                                   Respuesta HTML/JSON
+
+Para imágenes:
+Formulario → AdminController → Validación → Almacenamiento en public/imagenes/ → Nombre en BD
+                                                           ↓
+                                                    Vista → /imagenes/nombre.jpg
 
 ================================================================================
-10. ENCRIPTACIÓN DE CONTRASEÑAS
+14. ENCRIPTACIÓN DE CONTRASEÑAS
 ================================================================================
 
 1. Al registrarse, el usuario ingresa la contraseña en texto plano
@@ -269,6 +468,40 @@ Usuario → Ruta (web.php) → Controlador → Modelo → Base de Datos
 6. Hash::check() encripta el input y lo compara con el hash guardado
 
 ================================================================================
+15. MIGRACIONES
+================================================================================
+
+Orden de ejecución (importante para foreign keys):
+
+1. 0001_01_01_000001_create_cache_table
+2. 2025_10_01_000000_create_usuarios_table (NUEVA)
+3. 2025_10_14_174409_create_juegos_table
+4. 2025_10_14_174417_create_bibliotecas_table (NUEVA)
+5. 2025_10_14_174423_create_resenas_table
+6. 2025_11_03_000001_create_carritos_table
+7. 2025_11_17_000000_optimize_bibliotecas_table
+8. 2025_11_17_000001_cleanup_unused_tables
+9. 2025_11_17_000002_consolidate_migrations
+
+Nota: Las migraciones se ejecutan en orden alfabético-numérico, por eso
+se creó 2025_10_01 para usuarios (antes de juegos) y 2025_10_14_174417
+para bibliotecas (después de juegos pero antes de reseñas).
+
+================================================================================
+16. SEEDERS
+================================================================================
+
+UsuarioSeeder:
+- Crea usuario normal: usuario1 / usuario1 (rol: user, saldo: 100€)
+- Crea usuario admin: admin1 / admin1 (rol: admin, saldo: 100€)
+
+MisteamImportSeeder:
+- Crea 10 juegos de prueba con imágenes locales
+- Imágenes: THE_WITCHER_3_WILD_HUNT.jpg, RED_DEAD_REDEMPTION_2.jpg, etc.
+- Precios: 9.99€ a 59.99€
+- Descripciones detalladas de cada juego
+
+================================================================================
 RESUMEN DE ARCHIVOS CLAVE
 ================================================================================
 
@@ -276,13 +509,43 @@ Archivo                                    | Propósito
 -------------------------------------------|------------------------------------------
 routes/web.php                             | Define todas las rutas del proyecto
 app/Http/Controllers/AuthController.php    | Maneja login, registro, logout
+app/Http/Controllers/TiendaController.php  | Catálogo y búsqueda de juegos
 app/Http/Controllers/BibliotecaController  | Maneja juegos comprados
 app/Http/Controllers/CarritoController.php | Maneja carrito de compras
+app/Http/Controllers/ResenaController.php  | Maneja reseñas de juegos
+app/Http/Controllers/AdminController.php   | Panel de administración
+app/Http/Middleware/IsAdmin.php            | Verifica rol de administrador
 app/Models/Usuario.php                     | Modelo de usuario con encriptación
 app/Models/Juego.php                       | Modelo de juego
 app/Models/Biblioteca.php                  | Modelo de relación usuario-juego
 app/Models/Carrito.php                     | Modelo de carrito
 app/Models/Resena.php                      | Modelo de reseñas
+public/imagenes/                           | Almacenamiento de imágenes de juegos
+database/migrations/                       | Migraciones de BD (9 archivos)
+database/seeders/                          | Seeders (UsuarioSeeder, MisteamImportSeeder)
+
+================================================================================
+INSTALACIÓN Y USO
+================================================================================
+
+PRIMERA VEZ:
+1. php artisan migrate:fresh --seed
+   (Crea todas las tablas y carga datos de prueba)
+
+POSTERIORMENTE:
+1. php artisan serve
+2. Acceder a http://127.0.0.1:8000
+3. Login con admin1/admin1 o usuario1/usuario1
+
+CREDENCIALES DE PRUEBA:
+- Usuario normal: usuario1 / usuario1
+- Usuario admin: admin1 / admin1
+
+ACCESO AL PANEL DE ADMIN:
+- URL: http://127.0.0.1:8000/admin/dashboard
+- Solo accesible con usuario admin
+- Gestión de usuarios y juegos
+- Subida de imágenes
 
 ================================================================================
 FIN DEL DOCUMENTO
