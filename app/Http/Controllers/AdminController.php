@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Usuario;
 use App\Models\Juego;
 
@@ -33,6 +34,46 @@ class AdminController extends Controller
         return view('admin.usuarios.index', compact('usuarios'));
     }
 
+    // Mostrar formulario para crear usuario
+    public function crearUsuario()
+    {
+        return view('admin.usuarios.create');
+    }
+
+    // Guardar nuevo usuario
+    public function guardarUsuario(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|min:3|unique:usuarios',
+            'email' => 'required|email|unique:usuarios',
+            'clave' => 'required|string|min:6|confirmed',
+            'rol' => 'required|in:user,admin',
+            'saldo' => 'required|numeric|min:0',
+        ], [
+            'nombre.required' => 'El nombre de usuario es obligatorio',
+            'nombre.min' => 'El nombre debe tener al menos 3 caracteres',
+            'nombre.unique' => 'El nombre de usuario ya existe',
+            'email.required' => 'El email es obligatorio',
+            'email.email' => 'El email no es válido',
+            'email.unique' => 'El email ya está registrado',
+            'clave.required' => 'La contraseña es obligatoria',
+            'clave.min' => 'La contraseña debe tener al menos 6 caracteres',
+            'clave.confirmed' => 'Las contraseñas no coinciden',
+            'rol.required' => 'El rol es obligatorio',
+            'saldo.required' => 'El saldo es obligatorio',
+        ]);
+
+        Usuario::create([
+            'nombre' => $request->nombre,
+            'email' => $request->email,
+            'clave' => Hash::make($request->clave),
+            'rol' => $request->rol,
+            'saldo' => (float) $request->saldo,
+        ]);
+
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario creado correctamente.');
+    }
+
     // Editar usuario
     public function editarUsuario($id)
     {
@@ -50,9 +91,17 @@ class AdminController extends Controller
             'email' => 'required|email|unique:usuarios,email,' . $id,
             'rol' => 'required|in:user,admin',
             'saldo' => 'required|numeric|min:0',
+            'clave' => 'nullable|string|min:6',
         ]);
 
-        $usuario->update($request->only(['nombre', 'email', 'rol', 'saldo']));
+        $data = $request->only(['nombre', 'email', 'rol', 'saldo']);
+        
+        // Si se proporciona una nueva contraseña, actualizarla
+        if ($request->filled('clave')) {
+            $data['clave'] = Hash::make($request->clave);
+        }
+
+        $usuario->update($data);
 
         return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
     }
@@ -94,7 +143,8 @@ class AdminController extends Controller
             'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['titulo', 'descripcion', 'precio']);
+        $data = $request->only(['titulo', 'descripcion']);
+        $data['precio'] = (float) $request->precio;
 
         // Guardar imagen
         if ($request->hasFile('imagen')) {
@@ -128,7 +178,8 @@ class AdminController extends Controller
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['titulo', 'descripcion', 'precio']);
+        $data = $request->only(['titulo', 'descripcion']);
+        $data['precio'] = (float) $request->precio;
 
         // Guardar nueva imagen si se proporciona
         if ($request->hasFile('imagen')) {

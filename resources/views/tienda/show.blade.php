@@ -25,9 +25,12 @@
                 </div>
 
                 @if($tieneJuego)
-                    <div style="background: #1db954; padding: 10px 15px; border-radius: 5px; color: white; text-align: center;">
+                    <div style="background: #1db954; padding: 10px 15px; border-radius: 5px; color: white; text-align: center; margin-bottom: 15px;">
                         <i class='bx bx-check-circle'></i> Ya posees este juego
                     </div>
+                    <a href="{{ route('biblioteca.index') }}" class="btn" style="display: block; text-align: center; text-decoration: none;">
+                        <i class='bx bx-arrow-back'></i> Volver a mi biblioteca
+                    </a>
                 @else
                     <div class="juego-acciones" style="display: flex; gap: 10px;">
                         <form method="POST" action="{{ route('carrito.agregar') }}" style="flex: 1;">
@@ -54,14 +57,8 @@
         <h2 style="color: #66c0f4; margin-bottom: 20px;">Reseñas ({{ $resenas->total() }})</h2>
 
         @if($tieneJuego)
-            <div style="background: #2a475e; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                <h3 style="color: #66c0f4; margin-bottom: 15px;">Escribe tu reseña</h3>
-                <form method="POST" action="{{ route('resena.store') }}">
-                    @csrf
-                    <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                    <textarea name="contenido" placeholder="Comparte tu opinión sobre este juego..." required minlength="10" maxlength="1000" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #1b3a52; background: #1b3a52; color: #dfe3e6; min-height: 100px;"></textarea>
-                    <button type="submit" class="btn" style="margin-top: 10px;">Publicar reseña</button>
-                </form>
+            <div style="background: #2a475e; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <p style="color: #dfe3e6; margin: 0;">¿Tienes este juego? Haz clic en el botón "Reseña" en tu biblioteca para compartir tu opinión.</p>
             </div>
         @endif
 
@@ -70,10 +67,36 @@
         @else
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 @foreach($resenas as $resena)
-                    <article style="background: #2a475e; padding: 15px; border-radius: 10px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <strong style="color: #66c0f4;">{{ $resena->usuario->nombre }}</strong>
-                            <span style="color: #8b8e91; font-size: 12px;">{{ $resena->created_at->diffForHumans() }}</span>
+                    <article style="background: #2a475e; padding: 15px; border-radius: 10px; @if(Auth::user()->id === $resena->usuario_id) border-left: 4px solid #1db954; @endif">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <div>
+                                <strong style="color: #66c0f4;">
+                                    {{ $resena->usuario->nombre }}
+                                    @if(Auth::user()->id === $resena->usuario_id)
+                                        <span style="background: #1db954; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-left: 8px;">Tu reseña</span>
+                                    @endif
+                                </strong>
+                                <span style="color: #8b8e91; font-size: 12px; margin-left: 10px;">{{ $resena->created_at->diffForHumans() }}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <!-- Calificación en estrellas -->
+                                <div style="color: #ffd700; font-size: 16px; margin-bottom: 5px;">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <span style="color: {{ $i <= $resena->calificacion ? '#ffd700' : '#8b8e91' }};">★</span>
+                                    @endfor
+                                    <span style="color: #8b8e91; font-size: 12px; margin-left: 5px;">{{ $resena->calificacion }}/5</span>
+                                </div>
+                                <!-- Recomendación -->
+                                <div style="font-size: 14px;">
+                                    @if($resena->recomendacion)
+                                        <i class='bx bx-thumbs-up' style="color: #1db954;"></i>
+                                        <span style="color: #1db954;">Recomendado</span>
+                                    @else
+                                        <i class='bx bx-thumbs-down' style="color: #c7302a;"></i>
+                                        <span style="color: #c7302a;">No recomendado</span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                         <p style="color: #dfe3e6; margin: 10px 0;">{{ $resena->contenido }}</p>
                         

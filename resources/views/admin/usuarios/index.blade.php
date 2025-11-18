@@ -5,7 +5,12 @@
 @section('content')
 
 <div class="main admin-usuarios">
-    <h1>Gestión de Usuarios</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Gestión de Usuarios</h1>
+        <a href="{{ route('admin.usuarios.create') }}" class="btn" style="background: #1db954;">
+            <i class='bx bx-plus'></i> Crear Usuario
+        </a>
+    </div>
 
     @if(session('success'))
         <div class="mensaje">{{ session('success') }}</div>

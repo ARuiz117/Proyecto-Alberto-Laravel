@@ -44,6 +44,12 @@
             <input type="number" id="saldo" name="saldo" step="0.01" value="{{ old('saldo', $usuario->saldo) }}" required>
         </div>
 
+        <div class="form-group">
+            <label for="clave">Nueva Contraseña (opcional)</label>
+            <input type="password" id="clave" name="clave" placeholder="Dejar en blanco para no cambiar" minlength="6">
+            <small style="color: #8b8e91;">Mínimo 6 caracteres. Dejar en blanco si no deseas cambiar la contraseña.</small>
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Guardar cambios</button>
             <a href="{{ route('admin.usuarios') }}" class="btn btn-secondary">Cancelar</a>

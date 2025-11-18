@@ -13,6 +13,13 @@ class Resena extends Model
         'usuario_id',
         'juego_id',
         'contenido',
+        'calificacion',
+        'recomendacion',
+    ];
+
+    protected $casts = [
+        'calificacion' => 'integer',
+        'recomendacion' => 'boolean',
     ];
 
     // Relación: Una reseña pertenece a un usuario

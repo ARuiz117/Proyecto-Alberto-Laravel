@@ -53,6 +53,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Gestión de usuarios
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('usuarios');
+    Route::get('/usuarios/crear', [AdminController::class, 'crearUsuario'])->name('usuarios.create');
+    Route::post('/usuarios', [AdminController::class, 'guardarUsuario'])->name('usuarios.store');
     Route::get('/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('usuarios.edit');
     Route::put('/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('usuarios.update');
     Route::delete('/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('usuarios.destroy');
