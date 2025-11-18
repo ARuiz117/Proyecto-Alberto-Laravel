@@ -16,6 +16,7 @@ class Juego extends Model
         'descripcion',
         'precio',
         'imagen_url',
+        'genero',
     ];
 
     protected $casts = [

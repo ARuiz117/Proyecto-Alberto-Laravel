@@ -36,6 +36,21 @@
         </div>
 
         <div class="form-group">
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" required>
+                <option value="">Selecciona un género</option>
+                <option value="Acción" @if(old('genero') === 'Acción') selected @endif>Acción</option>
+                <option value="Terror" @if(old('genero') === 'Terror') selected @endif>Terror</option>
+                <option value="RPG" @if(old('genero') === 'RPG') selected @endif>RPG</option>
+                <option value="Estrategia" @if(old('genero') === 'Estrategia') selected @endif>Estrategia</option>
+                <option value="Aventura" @if(old('genero') === 'Aventura') selected @endif>Aventura</option>
+                <option value="Deportes" @if(old('genero') === 'Deportes') selected @endif>Deportes</option>
+                <option value="Puzzle" @if(old('genero') === 'Puzzle') selected @endif>Puzzle</option>
+                <option value="Simulación" @if(old('genero') === 'Simulación') selected @endif>Simulación</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="imagen">Imagen del juego</label>
             <input type="file" id="imagen" name="imagen" accept="image/*" required>
             <small>Formatos: JPG, PNG, GIF. Máximo 2MB</small>

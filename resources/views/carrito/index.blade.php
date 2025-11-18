@@ -35,7 +35,7 @@
                 @foreach($itemsCarrito as $item)
                     <article class="carrito-item">
                         <div class="item-imagen">
-                            <img loading="lazy" decoding="async" src="{{ $item->juego->imagen_url }}" alt="Portada de {{ $item->juego->titulo }}">
+                            <img loading="lazy" decoding="async" src="/imagenes/{{ $item->juego->imagen_url }}" alt="Portada de {{ $item->juego->titulo }}">
                         </div>
                         <div class="item-info">
                             <h4>{{ $item->juego->titulo }}</h4>

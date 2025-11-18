@@ -14,7 +14,7 @@ class TiendaController extends Controller
     }
 
     // Mostrar catálogo de juegos disponibles
-    public function index()
+    public function index(Request $request)
     {
         $usuario = Auth::user();
         
@@ -22,9 +22,18 @@ class TiendaController extends Controller
         $juegosComprados = $usuario->juegos()->pluck('juegos.id')->toArray();
         
         // Obtener juegos disponibles (no comprados)
-        $juegos = Juego::whereNotIn('id', $juegosComprados)->paginate(12);
+        $query = Juego::whereNotIn('id', $juegosComprados);
         
-        return view('tienda.index', compact('juegos'));
+        // Filtrar por género si se proporciona
+        if ($request->filled('genero')) {
+            $query->where('genero', $request->genero);
+        }
+        
+        $juegos = $query->paginate(12);
+        $generoSeleccionado = $request->filled('genero') ? $request->genero : null;
+        $generos = ['Acción', 'Terror', 'RPG', 'Estrategia', 'Aventura', 'Deportes', 'Puzzle', 'Simulación'];
+        
+        return view('tienda.index', compact('juegos', 'generos', 'generoSeleccionado'));
     }
 
     // Ver detalles de un juego específico

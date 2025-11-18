@@ -140,10 +140,11 @@ class AdminController extends Controller
             'titulo' => 'required|string|max:100|unique:juegos',
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0',
+            'genero' => 'required|string|in:Acción,Terror,RPG,Estrategia,Aventura,Deportes,Puzzle,Simulación',
             'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['titulo', 'descripcion']);
+        $data = $request->only(['titulo', 'descripcion', 'genero']);
         $data['precio'] = (float) $request->precio;
 
         // Guardar imagen
@@ -175,10 +176,11 @@ class AdminController extends Controller
             'titulo' => 'required|string|max:100|unique:juegos,titulo,' . $id,
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0',
+            'genero' => 'required|string|in:Acción,Terror,RPG,Estrategia,Aventura,Deportes,Puzzle,Simulación',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['titulo', 'descripcion']);
+        $data = $request->only(['titulo', 'descripcion', 'genero']);
         $data['precio'] = (float) $request->precio;
 
         // Guardar nueva imagen si se proporciona
