@@ -202,7 +202,7 @@ class SessionManager {
         warning.innerHTML = `
             <div class="warning-content">
                 <h3>⚠️ Sesión por expirar</h3>
-                <p>Tu sesión se cerrará en 30 segundos por inactividad.</p>
+                <p>Tu sesión se cerrará en <span id="countdown-timer" style="font-weight: bold; color: #ff6b6b; font-size: 1.5rem;">30</span> segundos por inactividad.</p>
                 <button onclick="sessionManager.extendSession()" class="btn btn-primary">Mantener sesión activa</button>
             </div>
         `;
@@ -224,6 +224,32 @@ class SessionManager {
         `;
         
         document.body.appendChild(warning);
+        
+        // Iniciar contador regresivo
+        this.startCountdown();
+    }
+    
+    startCountdown() {
+        let secondsLeft = 30;
+        const timerElement = document.getElementById('countdown-timer');
+        
+        const countdownInterval = setInterval(() => {
+            secondsLeft--;
+            if (timerElement) {
+                timerElement.textContent = secondsLeft;
+                
+                // Cambiar color según el tiempo restante
+                if (secondsLeft <= 10) {
+                    timerElement.style.color = '#ff3333';
+                } else if (secondsLeft <= 20) {
+                    timerElement.style.color = '#ff8800';
+                }
+            }
+            
+            if (secondsLeft <= 0) {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
     }
     
     extendSession() {

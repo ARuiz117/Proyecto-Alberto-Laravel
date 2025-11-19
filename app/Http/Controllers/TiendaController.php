@@ -67,6 +67,9 @@ class TiendaController extends Controller
                        ->whereNotIn('id', $juegosComprados)
                        ->paginate(12);
         
-        return view('tienda.index', compact('juegos', 'query'));
+        $generos = ['Acción', 'Terror', 'RPG', 'Estrategia', 'Aventura', 'Deportes', 'Puzzle', 'Simulación'];
+        $generoSeleccionado = null;
+        
+        return view('tienda.index', compact('juegos', 'query', 'generos', 'generoSeleccionado'));
     }
 }

@@ -9,8 +9,21 @@
 @section('content')
 
 <div class="main">
-    <h3>Carrito de Compras</h3>
-    <p>Saldo disponible: <strong>{{ number_format(Auth::user()->saldo, 2) }} €</strong></p>
+    <!-- Encabezado con información del usuario -->
+    <div style="background: #171a21; border: 1px solid #363c44; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="color: #66c0f4; font-size: 2rem; margin: 0 0 0.5rem 0; font-weight: 700;">
+                    <i class='bx bx-cart'></i> Carrito de Compras
+                </h1>
+                <p style="color: #8F98A0; margin: 0; font-size: 0.95rem;">Revisa y confirma tus compras</p>
+            </div>
+            <div style="background: #171a21; border: 1px solid #1db954; border-radius: 6px; padding: 1.5rem 2rem; text-align: center;">
+                <p style="color: #8F98A0; margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Saldo Disponible</p>
+                <p style="color: #1db954; margin: 0; font-size: 1.8rem; font-weight: bold;">{{ number_format(Auth::user()->saldo, 2) }} €</p>
+            </div>
+        </div>
+    </div>
 
     @if(session('error'))
         <div class="error">{{ session('error') }}</div>
@@ -27,7 +40,7 @@
     @if($itemsCarrito->isEmpty())
         <section class="carrito-vacio">
             <p>Tu carrito está vacío.</p>
-            <a href="{{ route('biblioteca.index') }}" class="btn">Explorar juegos</a>
+            <a href="{{ route('tienda.index') }}" class="btn btn-primary" style="text-decoration: none;">Explorar juegos</a>
         </section>
     @else
         <section class="carrito-contenido">
@@ -97,12 +110,12 @@
                     <form method="POST" action="{{ route('carrito.vaciar') }}" 
                           onsubmit="return confirm('¿Seguro que quieres vaciar el carrito?');">
                         @csrf
-                        <button type="submit" class="btn btn-secondary btn-block">
+                        <button type="submit" class="btn btn-danger btn-block">
                             <i class='bx bx-trash'></i> Vaciar carrito
                         </button>
                     </form>
                     
-                    <a href="{{ route('biblioteca.index') }}" class="btn btn-primary btn-block">
+                    <a href="{{ route('tienda.index') }}" class="btn btn-primary btn-block" style="text-decoration: none;">
                         <i class='bx bx-arrow-back'></i> Seguir comprando
                     </a>
                 </div>

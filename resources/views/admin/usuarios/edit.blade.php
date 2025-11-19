@@ -2,6 +2,10 @@
 
 @section('title', 'Editar Usuario - Steam HRG')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}" />
+@endsection
+
 @section('content')
 
 <div class="main admin-form">
@@ -51,8 +55,12 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Guardar cambios</button>
-            <a href="{{ route('admin.usuarios') }}" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-success">
+                <i class='bx bx-save'></i> Guardar Cambios
+            </button>
+            <a href="{{ route('admin.usuarios') }}" class="btn btn-secondary" style="text-decoration: none;">
+                <i class='bx bx-x'></i> Cancelar
+            </a>
         </div>
     </form>
 </div>

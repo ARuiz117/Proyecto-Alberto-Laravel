@@ -6,29 +6,32 @@
 /* Grid de juegos */
 .biblioteca, .juegos-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   padding: 20px 0;
+  width: 100%;
 }
 
 /* Tarjetas de juegos */
 .juego-card {
-  background-color: #2a475e;
-  padding: 20px;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%);
+  padding: 1.5rem;
+  border: 1px solid #417a9b;
+  border-radius: 8px;
   text-align: center;
   position: relative;
-  box-shadow: 0 0 10px #00000044;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.5s ease;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .juego-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 20px #00000088;
+  transform: translateY(-4px);
+  border-color: #66c0f4;
+  box-shadow: 0 8px 20px rgba(102, 192, 244, 0.3);
 }
 
 .juego-card h4 {
@@ -74,9 +77,10 @@
 /* Precio */
 .precio {
   font-weight: bold;
-  color: #a4dffd;
+  color: #1db954;
   margin-top: auto;
-  font-size: 17px;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
 }
 
 /* Acciones de juegos */
@@ -87,28 +91,11 @@
   margin-top: 1rem;
 }
 
-.btn-carrito {
-  background: linear-gradient(to right, #4CAF50 5%, #45a049 95%);
-  color: white;
+.juego-acciones .btn {
   width: 100%;
-}
-
-.btn-carrito:hover {
-  background: linear-gradient(to right, #45a049 5%, #4CAF50 95%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.6);
-}
-
-.btn-comprar {
-  background: linear-gradient(to right, #2196F3 5%, #1976D2 95%);
-  color: white;
-  width: 100%;
-}
-
-.btn-comprar:hover {
-  background: linear-gradient(to right, #1976D2 5%, #2196F3 95%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.6);
+  margin: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
 }
 
 /* Responsive */

@@ -4,12 +4,57 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/biblioteca.css') }}" />
+    <style>
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .biblioteca-header {
+            animation: slideInDown 0.6s ease-out;
+        }
+        
+        .biblioteca-section {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+    </style>
 @endsection
 
 @section('content')
 
 <div class="main">
-    <h3>Bienvenido, {{ Auth::user()->nombre }}. Tu saldo: {{ number_format(Auth::user()->saldo, 2) }} €</h3>
+    <!-- Encabezado mejorado de la biblioteca -->
+    <div class="biblioteca-header" style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="color: #66c0f4; font-size: 2rem; margin: 0 0 0.5rem 0; font-weight: 700;">
+                    <i class='bx bx-library'></i> Bienvenido, {{ Auth::user()->nombre }}
+                </h1>
+                <p style="color: #8F98A0; margin: 0; font-size: 0.95rem;">Gestiona tu colección de juegos</p>
+            </div>
+            <div style="background: linear-gradient(135deg, rgba(102, 192, 244, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%); border: 1px solid #417a9b; border-radius: 6px; padding: 1.5rem 2rem; text-align: center;">
+                <p style="color: #8F98A0; margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Tu Saldo</p>
+                <p style="color: #1db954; margin: 0; font-size: 1.8rem; font-weight: bold;">{{ number_format(Auth::user()->saldo, 2) }} €</p>
+            </div>
+        </div>
+    </div>
 
     @if(session('error'))
         <div class="error">{{ session('error') }}</div>
@@ -19,11 +64,14 @@
         <div class="mensaje">{{ session('success') }}</div>
     @endif
 
-    <section class="biblioteca">
-        <h3>Tu Biblioteca</h3>
-        @if($misJuegos->isEmpty())
-            <p>Aún no has comprado ningún juego.</p>
-        @else
+    <h2 style="color: #66c0f4; font-size: 1.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid #417a9b; padding-bottom: 0.5rem; width: 100%;">
+        <i class='bx bx-collection'></i> Tu Biblioteca
+    </h2>
+
+    @if($misJuegos->isEmpty())
+        <p>Aún no has comprado ningún juego.</p>
+    @else
+        <section class="biblioteca biblioteca-section">
             @foreach($misJuegos as $juego)
                 <article class="juego-card">
                     <h4>{{ $juego->titulo }}</h4>
@@ -33,36 +81,36 @@
                     <p>{{ $juego->descripcion }}</p>
                     
                     <!-- Botones de acciones -->
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
-                        <!-- Botón Ver Reseñas -->
-                        <a href="{{ route('tienda.show', $juego->id) }}" class="btn" style="flex: 1; background: #66c0f4; text-decoration: none; text-align: center;">
-                            <i class='bx bx-comment'></i> Ver reseñas
+                    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center;">
+                        <!-- Botón Detalles -->
+                        <a href="{{ route('tienda.show', $juego->id) }}" class="btn btn-detalles" style="text-decoration: none;">
+                            <i class='bx bx-info-circle'></i> Detalles
                         </a>
                         
                         <!-- Botón Reseña -->
-                        <button class="btn" type="button" onclick="abrirFormularioResena({{ $juego->id }}, '{{ $juego->titulo }}')" style="flex: 1; background: #1db954;">
+                        <button class="btn btn-resena" type="button" onclick="abrirFormularioResena({{ $juego->id }}, '{{ $juego->titulo }}')">
                             <i class='bx bx-star'></i> Reseña
                         </button>
                         
                         <!-- Botón Devolver -->
-                        <form method="POST" action="{{ route('biblioteca.devolver') }}" style="flex: 1;" onsubmit="return confirm('¿Seguro que quieres devolver este juego?');">
+                        <form method="POST" action="{{ route('biblioteca.devolver') }}" onsubmit="return confirm('¿Seguro que quieres devolver este juego?');">
                             @csrf
                             <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                            <button class="btn" type="submit" style="width: 100%; background: #c7302a;">
+                            <button class="btn btn-devolver" type="submit">
                                 <i class='bx bx-trash'></i> Devolver
                             </button>
                         </form>
                     </div>
                 </article>
             @endforeach
-        @endif
-    </section>
+        </section>
+    @endif
 
-    <section class="acciones-biblioteca" style="margin-top: 30px; display: flex; gap: 10px;">
-        <a href="{{ route('tienda.index') }}" class="btn">
+    <section class="acciones-biblioteca" style="margin-top: 30px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ route('tienda.index') }}" class="btn btn-primary" style="text-decoration: none;">
             <i class='bx bx-store'></i> Ir a la tienda
         </a>
-        <a href="{{ route('carrito.index') }}" class="btn">
+        <a href="{{ route('carrito.index') }}" class="btn btn-secondary" style="text-decoration: none;">
             <i class='bx bx-cart'></i> Ver carrito
         </a>
     </section>
@@ -117,8 +165,8 @@
 
             <!-- Botones -->
             <div style="display: flex; gap: 10px;">
-                <button type="submit" class="btn" style="flex: 1; background: #1db954;">Publicar reseña</button>
-                <button type="button" onclick="cerrarFormularioResena()" class="btn" style="flex: 1; background: #8b8e91;">Cancelar</button>
+                <button type="submit" class="btn btn-success" style="flex: 1;">Publicar reseña</button>
+                <button type="button" onclick="cerrarFormularioResena()" class="btn btn-secondary" style="flex: 1;">Cancelar</button>
             </div>
         </form>
     </div>

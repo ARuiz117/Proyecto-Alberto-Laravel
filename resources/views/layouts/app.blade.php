@@ -12,7 +12,6 @@
     @yield('styles')
     
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="{{ asset('js/accessibility.js') }}" defer></script>
     <script src="{{ asset('js/session-manager.js') }}" defer></script>
 </head>
 <body @auth class="logged-in" @endauth>
@@ -70,13 +69,6 @@
                     <i class='bx bx-envelope'></i>
                     alberto.rugz@gmail.com
                 </a>
-                <button class="btn btn-colorblind"
-                        onclick="toggleColorBlindMode()"
-                        aria-pressed="false"
-                        aria-label="Activar modo daltonismo"
-                        role="switch">
-                    Modo daltonismo
-                </button>
             </div>
         </footer>
     </div>

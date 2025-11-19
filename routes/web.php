@@ -8,6 +8,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\TiendaController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TrailerController;
 use App\Models\Usuario;
 
 // Redirigir raíz al login
@@ -45,6 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/resena/crear', [ResenaController::class, 'store'])->name('resena.store');
     Route::put('/resena/{id}', [ResenaController::class, 'update'])->name('resena.update');
     Route::delete('/resena/{id}', [ResenaController::class, 'destroy'])->name('resena.destroy');
+    
+    // Trailers y Screenshots
+    Route::post('/trailer/obtener', [TrailerController::class, 'obtenerTrailer'])->name('trailer.obtener');
+    Route::post('/trailer/screenshots', [TrailerController::class, 'obtenerScreenshots'])->name('trailer.screenshots');
 });
 
 // Rutas de administrador

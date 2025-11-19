@@ -2,12 +2,16 @@
 
 @section('title', 'Gestión de Usuarios - Steam HRG')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}" />
+@endsection
+
 @section('content')
 
 <div class="main admin-usuarios">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <h1>Gestión de Usuarios</h1>
-        <a href="{{ route('admin.usuarios.create') }}" class="btn" style="background: #1db954;">
+        <a href="{{ route('admin.usuarios.create') }}" class="btn btn-success" style="text-decoration: none;">
             <i class='bx bx-plus'></i> Crear Usuario
         </a>
     </div>
@@ -42,11 +46,15 @@
                     <td>{{ number_format($usuario->saldo, 2) }} €</td>
                     <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
                     <td class="acciones">
-                        <a href="{{ route('admin.usuarios.edit', $usuario->id) }}" class="btn btn-small btn-info">Editar</a>
+                        <a href="{{ route('admin.usuarios.edit', $usuario->id) }}" class="btn btn-small btn-info" style="text-decoration: none;">
+                            <i class='bx bx-edit'></i> Editar
+                        </a>
                         <form method="POST" action="{{ route('admin.usuarios.destroy', $usuario->id) }}" style="display: inline;" onsubmit="return confirm('¿Eliminar este usuario?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-small btn-danger">Eliminar</button>
+                            <button type="submit" class="btn btn-small btn-danger">
+                                <i class='bx bx-trash'></i> Eliminar
+                            </button>
                         </form>
                     </td>
                 </tr>

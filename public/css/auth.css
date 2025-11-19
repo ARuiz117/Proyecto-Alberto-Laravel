@@ -43,14 +43,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
+}
+
+#login-form form, #register-form form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+#login-form form input, #register-form form input {
+  width: 100%;
+  max-width: 350px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#login-form form input::placeholder, #register-form form input::placeholder {
+  text-align: center;
+}
+
+#login-form form .btn, #register-form form .btn {
+  width: auto;
+  margin-top: 0.5rem;
 }
 
 #login-form h2, #register-form h2 {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
   font-size: 1.3rem;
   color: #66c0f4;
   text-align: center;
   width: 100%;
+  margin-top: 0;
 }
 
 /* Sección de registro en login */
@@ -59,10 +85,11 @@
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #417a9b;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .register-text {

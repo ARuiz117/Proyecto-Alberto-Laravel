@@ -1,0 +1,358 @@
+/* ============================================
+   ADMIN.CSS - Panel de Administración
+   Estética Steam profesional
+   ============================================ */
+
+/* Dashboard */
+.admin-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-dashboard h1 {
+  color: #66c0f4;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #417a9b;
+  padding-bottom: 1rem;
+}
+
+/* Tarjetas de estadísticas */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, rgba(102, 192, 244, 0.1) 0%, rgba(29, 185, 84, 0.05) 100%);
+  border: 1px solid #417a9b;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: #66c0f4;
+  box-shadow: 0 8px 20px rgba(102, 192, 244, 0.3);
+}
+
+.stat-card h3 {
+  color: #dfe3e6;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.stat-card .stat-number {
+  color: #66c0f4;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.stat-card .btn {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Tablas Admin */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(23, 26, 33, 0.6);
+  border: 1px solid #417a9b;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin: 2rem 0;
+}
+
+.admin-table thead {
+  background: linear-gradient(90deg, rgba(102, 192, 244, 0.15) 0%, rgba(29, 185, 84, 0.05) 100%);
+  border-bottom: 2px solid #417a9b;
+}
+
+.admin-table th {
+  padding: 1rem;
+  color: #66c0f4;
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid rgba(65, 122, 155, 0.3);
+  transition: all 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(102, 192, 244, 0.08);
+}
+
+.admin-table td {
+  padding: 1rem;
+  color: #dfe3e6;
+  vertical-align: middle;
+}
+
+.admin-table .acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-table .btn-small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Formularios Admin */
+.admin-form {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.admin-form h1 {
+  color: #66c0f4;
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #417a9b;
+  padding-bottom: 1rem;
+}
+
+.form {
+  background: rgba(23, 26, 33, 0.6);
+  border: 1px solid #417a9b;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #dfe3e6;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #417a9b;
+  border-radius: 4px;
+  background: rgba(10, 25, 41, 0.8);
+  color: #dfe3e6;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #8b8e91;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #66c0f4;
+  background: rgba(10, 25, 41, 1);
+  box-shadow: 0 0 8px rgba(102, 192, 244, 0.3);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group small {
+  display: block;
+  color: #8b8e91;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* Acciones del formulario */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.form-actions .btn {
+  flex: 1;
+  max-width: 200px;
+}
+
+/* Secciones Admin */
+.admin-usuarios-recientes,
+.admin-juegos,
+.admin-usuarios {
+  margin-bottom: 3rem;
+}
+
+.admin-usuarios-recientes h2,
+.admin-juegos h1,
+.admin-usuarios h1 {
+  color: #66c0f4;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #417a9b;
+  padding-bottom: 0.5rem;
+}
+
+/* Botones Admin */
+.btn-info {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  border: 1px solid #1565c0;
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #42a5f5 0%, #2196F3 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.6);
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Encabezados con acciones */
+.admin-usuarios > div:first-child,
+.admin-juegos > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #417a9b;
+  border-radius: 4px;
+  color: #dfe3e6;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.pagination a:hover {
+  background: rgba(102, 192, 244, 0.2);
+  border-color: #66c0f4;
+  color: #66c0f4;
+}
+
+.pagination .active span {
+  background: linear-gradient(135deg, #66c0f4 0%, #417a9b 100%);
+  border-color: #66c0f4;
+  color: white;
+}
+
+.pagination .disabled span {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mensajes de error */
+.error ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.error li {
+  padding: 0.5rem 0;
+  color: #ff6b6b;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .admin-stats {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .admin-table {
+    font-size: 0.9rem;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-form {
+    max-width: 100%;
+  }
+  
+  .form {
+    padding: 1.5rem;
+  }
+  
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-table {
+    font-size: 0.85rem;
+    overflow-x: auto;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn {
+    max-width: 100%;
+  }
+  
+  .admin-table .acciones {
+    flex-direction: column;
+  }
+  
+  .admin-table .btn-small {
+    width: 100%;
+  }
+}

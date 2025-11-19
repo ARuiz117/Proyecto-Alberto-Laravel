@@ -2,6 +2,10 @@
 
 @section('title', 'Panel de Administración - Steam HRG')
 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}" />
+@endsection
+
 @section('content')
 
 <div class="main admin-dashboard">
@@ -11,12 +15,12 @@
         <div class="stat-card">
             <h3>Usuarios</h3>
             <p class="stat-number">{{ $totalUsuarios }}</p>
-            <a href="{{ route('admin.usuarios') }}" class="btn btn-small">Gestionar</a>
+            <a href="{{ route('admin.usuarios') }}" class="btn btn-primary btn-small" style="text-decoration: none;">Gestionar</a>
         </div>
         <div class="stat-card">
             <h3>Juegos</h3>
             <p class="stat-number">{{ $totalJuegos }}</p>
-            <a href="{{ route('admin.juegos') }}" class="btn btn-small">Gestionar</a>
+            <a href="{{ route('admin.juegos') }}" class="btn btn-primary btn-small" style="text-decoration: none;">Gestionar</a>
         </div>
         <div class="stat-card">
             <h3>Saldo Total</h3>
