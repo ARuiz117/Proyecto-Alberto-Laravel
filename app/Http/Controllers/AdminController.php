@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Usuario;
 use App\Models\Juego;
+use App\Models\Biblioteca;
 
 class AdminController extends Controller
 {
@@ -21,10 +22,15 @@ class AdminController extends Controller
     {
         $totalUsuarios = Usuario::count();
         $totalJuegos = Juego::count();
-        $totalVentas = Usuario::sum('saldo'); // Aproximado
+        
+        // Desglosar saldos
+        $saldoAdmin = Usuario::where('rol', 'admin')->sum('saldo');
+        $saldoUsuarios = Usuario::where('rol', 'user')->sum('saldo');
+        $totalVentas = $saldoAdmin + $saldoUsuarios; // Total de todos los saldos
+        
         $usuariosRecientes = Usuario::latest()->take(5)->get();
         
-        return view('admin.dashboard', compact('totalUsuarios', 'totalJuegos', 'totalVentas', 'usuariosRecientes'));
+        return view('admin.dashboard', compact('totalUsuarios', 'totalJuegos', 'totalVentas', 'saldoAdmin', 'saldoUsuarios', 'usuariosRecientes'));
     }
 
     // Listar usuarios

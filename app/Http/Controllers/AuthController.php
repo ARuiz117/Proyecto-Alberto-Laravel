@@ -26,12 +26,18 @@ class AuthController extends Controller
             'clave' => 'required|string',
         ]);
 
-        $usuario = Usuario::where('nombre', $request->usuario)->first();
+        // Buscar por nombre de usuario O por email
+        $usuario = Usuario::where('nombre', $request->usuario)
+                          ->orWhere('email', $request->usuario)
+                          ->first();
 
         // Verificar la contraseña usando Hash::check()
         if ($usuario && Hash::check($request->clave, $usuario->clave)) {
             Auth::login($usuario);
             $request->session()->regenerate();
+            
+            // Marcar que acaba de hacer login para mostrar mensaje de bienvenida
+            session()->flash('just_logged_in', true);
             
             return redirect()->intended(route('biblioteca.index'));
         }
@@ -88,5 +94,53 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         
         return redirect()->route('login')->with('success', 'Has cerrado sesión correctamente.');
+    }
+
+    // Mostrar formulario de cambio de contraseña
+    public function showChangePassword()
+    {
+        return view('auth.change-password');
+    }
+
+    // Procesar cambio de contraseña
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'current_password.required' => 'La contraseña actual es obligatoria',
+            'password.required' => 'La nueva contraseña es obligatoria',
+            'password.min' => 'La nueva contraseña debe tener al menos 6 caracteres',
+            'password.confirmed' => 'Las contraseñas no coinciden',
+        ]);
+
+        $user = Auth::user();
+
+        // Verificar contraseña actual
+        if (!Hash::check($request->current_password, $user->clave)) {
+            return back()->withErrors([
+                'current_password' => 'La contraseña actual es incorrecta',
+            ]);
+        }
+
+        // Actualizar contraseña
+        $user->update([
+            'clave' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('biblioteca.index')->with('success', 'Contraseña actualizada correctamente.');
+    }
+
+    // Mostrar información personal del perfil
+    public function showProfileInfo()
+    {
+        return view('auth.change-password');
+    }
+
+    // Mostrar historial de compras del perfil
+    public function showProfileHistory()
+    {
+        return view('auth.change-password');
     }
 }

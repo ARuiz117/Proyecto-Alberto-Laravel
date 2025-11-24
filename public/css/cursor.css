@@ -1,0 +1,191 @@
+/* Cursor personalizado */
+
+/* Ocultar cursor por defecto FORZADO */
+body {
+    cursor: none !important;
+}
+
+/* Forzar ocultar cursor en TODOS los elementos */
+* {
+    cursor: none !important;
+}
+
+/* Forzar ocultar cursor en todos los estados posibles */
+*:hover,
+*:active,
+*:focus,
+*:visited {
+    cursor: none !important;
+}
+
+/* Cursor principal personalizado (SOLO SVG - sin fondo) */
+.cursor-custom {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    z-index: 999999;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate(-50%, -50%);
+    /* SIN FONDO - solo SVG */
+    display: block !important;
+}
+
+/* Cursor SVG interno (siempre blanco) */
+.cursor-custom svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    color: #ffffff;
+    transition: color 0.2s ease, transform 0.2s ease;
+    /* Sombra para visibilidad en fondos claros */
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* Cursor en estado hover (sin cambio de color) */
+.cursor-custom.hover svg {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Cursor en estado clic (flecha se pone de blanco más brillante) */
+.cursor-custom.click svg {
+    color: #f0f0f0; /* Blanco más claro y brillante */
+    transform: scale(0.95);
+    /* Solo brillo sutil sin blur */
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+    /* Animación simple de cambio de color */
+    animation: flechaBlanca 0.2s ease-out;
+}
+
+/* Cursor follow (etiqueta que sigue al cursor) */
+.cursor-follow {
+    position: fixed;
+    background: #000;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 999998;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+    margin-top: -12px;
+    margin-left: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Cursor follow visible */
+.cursor-follow.visible {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+}
+
+/* Sin efectos especiales sobre elementos interactivos */
+.cursor-custom.link-hover svg {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.cursor-custom.button-hover svg {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.cursor-custom.input-hover svg {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.cursor-custom.juego-hover svg {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Animación */
+@keyframes cursorEntrance {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+.cursor-custom {
+    animation: cursorEntrance 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Optimización para móviles (ocultar cursor personalizado) */
+@media (pointer: coarse) {
+    body {
+        cursor: auto !important;
+    }
+    
+    * {
+        cursor: auto !important;
+    }
+    
+    .cursor-custom,
+    .cursor-follow {
+        display: none !important;
+    }
+}
+
+/* Efecto de pulso sutil al hover */
+.cursor-custom.hover svg {
+    animation: pulseSubtle 0.2s ease-out;
+}
+
+@keyframes pulseSubtle {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+/* Asegurar que el cursor siempre esté por encima */
+.cursor-custom,
+.cursor-follow {
+    position: fixed !important;
+    z-index: 999999 !important;
+}
+
+/* Prevenir que el cursor del sistema aparezca en clics */
+*:active,
+*:focus,
+button:active,
+button:focus,
+input:active,
+input:focus,
+a:active,
+a:focus {
+    cursor: none !important;
+}
+
+/* Animación simple de cambio a blanco brillante */
+@keyframes flechaBlanca {
+    0% {
+        color: #ffffff;
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+    }
+    50% {
+        color: #f8f8f8; /* Blanco más brillante */
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+    }
+    100% {
+        color: #f0f0f0; /* Blanco brillante final */
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+    }
+}

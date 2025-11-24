@@ -1,9 +1,6 @@
-/* ============================================
-   BIBLIOTECA.CSS - Biblioteca y Tienda
-   Contiene: Grid de juegos, Cards, Acciones
-   ============================================ */
+/* Biblioteca de juegos */
 
-/* Grid de juegos */
+/* Grid principal de juegos */
 .biblioteca, .juegos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -12,93 +9,7 @@
   width: 100%;
 }
 
-/* Tarjetas de juegos */
-.juego-card {
-  background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%);
-  padding: 1.5rem;
-  border: 1px solid #417a9b;
-  border-radius: 8px;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.5s ease;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.juego-card:hover {
-  transform: translateY(-4px);
-  border-color: #66c0f4;
-  box-shadow: 0 8px 20px rgba(102, 192, 244, 0.3);
-}
-
-.juego-card h4 {
-  margin: 0 0 10px;
-  font-size: 20px;
-  color: #66c0f4;
-}
-
-.juego-card p {
-  font-size: 14px;
-  color: #dfe3e6;
-  margin: 0 0 10px 0;
-}
-
-/* Contenedor de imagen */
-.img-container {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  margin: 15px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.img-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: block;
-}
-
-.img-container img:hover {
-  transform: scale(1.07);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.5);
-}
-
-/* Precio */
-.precio {
-  font-weight: bold;
-  color: #1db954;
-  margin-top: auto;
-  margin-bottom: 1rem;
-  font-size: 1.3rem;
-}
-
-/* Acciones de juegos */
-.juego-acciones {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.juego-acciones .btn {
-  width: 100%;
-  margin: 0;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-}
-
-/* Responsive */
+/* Responsive del grid principal */
 @media (max-width: 1200px) {
   .biblioteca, .juegos-grid {
     grid-template-columns: repeat(2, 1fr);

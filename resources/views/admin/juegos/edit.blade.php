@@ -59,7 +59,7 @@
             <label for="imagen">Imagen del juego</label>
             @if($juego->imagen_url)
                 <div style="margin-bottom: 10px;">
-                    <img src="/imagenes/{{ $juego->imagen_url }}" alt="{{ $juego->titulo }}" style="max-width: 150px; border-radius: 5px;">
+                    <img src="{{ asset('imagenes/' . $juego->imagen_url) }}" alt="{{ $juego->titulo }}" style="max-width: 150px; border-radius: 5px;">
                     <p style="font-size: 12px; color: #666;">Imagen actual</p>
                 </div>
             @endif

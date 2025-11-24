@@ -4,6 +4,8 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/biblioteca.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/juego-cards.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/tienda-botones.css') }}" />
     <style>
         @keyframes slideInDown {
             from {
@@ -76,7 +78,7 @@
                 <article class="juego-card">
                     <h4>{{ $juego->titulo }}</h4>
                     <div class="img-container">
-                        <img loading="lazy" decoding="async" src="/imagenes/{{ $juego->imagen_url }}" alt="Portada de {{ $juego->titulo }}">
+                        <img loading="lazy" decoding="async" src="{{ asset('imagenes/' . $juego->imagen_url) }}" alt="Portada de {{ $juego->titulo }}">
                     </div>
                     <p>{{ $juego->descripcion }}</p>
                     
@@ -93,13 +95,9 @@
                         </button>
                         
                         <!-- Botón Devolver -->
-                        <form method="POST" action="{{ route('biblioteca.devolver') }}" onsubmit="return confirm('¿Seguro que quieres devolver este juego?');">
-                            @csrf
-                            <input type="hidden" name="juego_id" value="{{ $juego->id }}">
-                            <button class="btn btn-devolver" type="submit">
-                                <i class='bx bx-trash'></i> Devolver
-                            </button>
-                        </form>
+                        <button class="btn btn-devolver" type="button" onclick="abrirConfirmacionDevolver({{ $juego->id }}, '{{ $juego->titulo }}')">
+                            <i class='bx bx-trash'></i> Devolver
+                        </button>
                     </div>
                 </article>
             @endforeach
@@ -141,20 +139,6 @@
                 </div>
             </div>
 
-            <!-- Recomendación -->
-            <div style="margin-bottom: 20px;">
-                <label style="color: #dfe3e6; display: block; margin-bottom: 10px; font-weight: bold;">¿Recomiendas este juego?</label>
-                <div style="display: flex; gap: 20px;">
-                    <label style="color: #dfe3e6; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="recomendacion" value="1" required style="cursor: pointer;"> 
-                        <i class='bx bx-thumbs-up' style="color: #1db954; font-size: 20px;"></i> Sí, lo recomiendo
-                    </label>
-                    <label style="color: #dfe3e6; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="recomendacion" value="0" required style="cursor: pointer;">
-                        <i class='bx bx-thumbs-down' style="color: #c7302a; font-size: 20px;"></i> No lo recomiendo
-                    </label>
-                </div>
-            </div>
 
             <!-- Comentario -->
             <div style="margin-bottom: 20px;">
@@ -171,6 +155,64 @@
         </form>
     </div>
 </div>
+
+<!-- Modal de Confirmación - Devolver Juego -->
+<div id="modalConfirmacionDevolver" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s ease;">
+    <div style="background: linear-gradient(135deg, #1b3a52 0%, #0d1929 100%); border: 2px solid #2a5f7f; border-radius: 12px; padding: 40px; max-width: 450px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); animation: slideUp 0.4s ease;">
+        
+        <!-- Icono de advertencia -->
+        <div style="text-align: center; margin-bottom: 25px;">
+            <i class='bx bx-money-withdraw' style="font-size: 48px; color: #1db954;"></i>
+        </div>
+
+        <!-- Título -->
+        <h2 style="color: #dfe3e6; text-align: center; margin: 0 0 15px 0; font-size: 1.5rem; font-weight: 700;">
+            ¿Devolver <span id="tituloJuegoADevolver"></span>?
+        </h2>
+
+        <!-- Mensaje -->
+        <p style="color: #8b8e91; text-align: center; margin: 0 0 30px 0; font-size: 1rem; line-height: 1.5;">
+            Recibirás el reembolso completo del precio del juego. Esta acción no se puede deshacer.
+        </p>
+
+        <!-- Botones -->
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button type="button" onclick="cerrarConfirmacionDevolver()" style="background: #2a475e; color: #dfe3e6; border: 1px solid #3d5a73; padding: 12px 30px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; min-width: 140px;">
+                Cancelar
+            </button>
+            <button type="button" onclick="confirmarDevolucion()" style="background: linear-gradient(135deg, #1db954 0%, #1aa34a 100%); color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; min-width: 140px;">
+                <i class='bx bx-money-withdraw'></i> Devolver
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#modalConfirmacionDevolver button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#modalConfirmacionDevolver button[onclick*="confirmarDevolucion"]:hover {
+    background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
+}
+</style>
 
 <script>
 function abrirFormularioResena(juegoId, titulo) {
@@ -199,6 +241,56 @@ document.querySelectorAll('.star-input').forEach(input => {
             }
         });
     });
+});
+
+// ============================================
+// MODAL DE CONFIRMACIÓN - DEVOLVER JUEGO
+// ============================================
+
+let juegoIdADevolver = null;
+
+function abrirConfirmacionDevolver(juegoId, juegoTitulo) {
+    juegoIdADevolver = juegoId;
+    document.getElementById('tituloJuegoADevolver').textContent = juegoTitulo;
+    document.getElementById('modalConfirmacionDevolver').style.display = 'flex';
+}
+
+function cerrarConfirmacionDevolver() {
+    document.getElementById('modalConfirmacionDevolver').style.display = 'none';
+    juegoIdADevolver = null;
+}
+
+function confirmarDevolucion() {
+    if (juegoIdADevolver) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/ProyectoAlberto-Steam-Laravel/public/biblioteca/devolver`;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '_token';
+        tokenInput.value = csrfToken;
+        
+        const juegoIdInput = document.createElement('input');
+        juegoIdInput.type = 'hidden';
+        juegoIdInput.name = 'juego_id';
+        juegoIdInput.value = juegoIdADevolver;
+        
+        form.appendChild(tokenInput);
+        form.appendChild(juegoIdInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('modalConfirmacionDevolver').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarConfirmacionDevolver();
+    }
 });
 
 // Cerrar modal al hacer clic fuera

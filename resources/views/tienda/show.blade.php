@@ -16,26 +16,26 @@
             <div style="max-width: 400px;">
                 <!-- Imagen Principal -->
                 <div class="juego-imagen" style="margin-bottom: 30px; width: 100%; max-width: 350px;">
-                    <img src="/imagenes/{{ $juego->imagen_url }}" alt="Portada de {{ $juego->titulo }}" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer; box-shadow: 0 8px 16px rgba(0,0,0,0.5); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="abrirTrailer('{{ $juego->titulo }}')">
-                    <p style="color: #8b8e91; font-size: 12px; margin-top: 12px; text-align: center;">🎬 Haz clic para ver el trailer</p>
-                </div>
-                
-                <!-- Carrusel de Screenshots con Hover Expandible -->
-                <div id="carruselScreenshots" style="display: none; width: 100%;">
-                    <h3 style="color: #66c0f4; margin-bottom: 15px; font-size: 18px;">📸 Capturas de pantalla</h3>
-                    <div style="background: #0a1929; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); width: 100%; padding: 15px;">
-                        <div style="display: flex; gap: 8px; justify-content: center; align-items: flex-end; height: 280px; width: 100%;" id="screenshotsContainer">
-                            <!-- Screenshots se cargarán aquí -->
-                        </div>
+                    <img src="{{ asset('imagenes/' . $juego->imagen_url) }}" alt="Portada de {{ $juego->titulo }}" style="width: 100%; height: auto; border-radius: 10px; cursor: pointer; box-shadow: 0 8px 16px rgba(0,0,0,0.5); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="abrirTrailer('{{ $juego->titulo }}')">
+                    <div style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 8px; padding: 12px; margin-top: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                        <p style="color: #dfe3e6; font-size: 12px; margin: 0; text-align: center;">🎬 Haz clic para ver el trailer</p>
                     </div>
                 </div>
             </div>
             <div class="juego-info">
-                <h1 style="color: #66c0f4; margin-bottom: 10px;">{{ $juego->titulo }}</h1>
-                <p style="color: #dfe3e6; margin-bottom: 20px;">{{ $juego->descripcion }}</p>
+                <!-- Caja para el título -->
+                <div style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <h1 style="color: #66c0f4; margin: 0; font-size: 28px;">{{ $juego->titulo }}</h1>
+                </div>
                 
-                <div style="margin-bottom: 20px;">
-                    <span style="font-size: 28px; color: #1db954; font-weight: bold;">{{ number_format($juego->precio, 2) }} €</span>
+                <!-- Caja para la descripción -->
+                <div style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <p style="color: #dfe3e6; margin: 0; line-height: 1.6; font-size: 16px;">{{ $juego->descripcion }}</p>
+                </div>
+                
+                <!-- Caja para el precio -->
+                <div style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-align: center;">
+                    <span style="font-size: 32px; color: #1db954; font-weight: bold;">{{ number_format($juego->precio, 2) }} €</span>
                 </div>
 
                 @if($tieneJuego)
@@ -67,6 +67,24 @@
         </div>
     </section>
 
+    <!-- Sección centrada para el carrusel -->
+    <section class="carrusel-centrado" style="margin: 40px 0;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <div id="carruselScreenshots" style="display: none; width: 100%; max-width: 1200px;">
+                <div style="background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%); border: 1px solid #417a9b; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <h3 style="color: #66c0f4; margin: 0; font-size: 20px; text-align: center;">📸 Capturas de pantalla</h3>
+                </div>
+                <div style="background: #0a1929; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); width: 100%; padding: 25px;">
+                    <div style="display: flex; gap: 20px; justify-content: center; align-items: center; height: 400px; width: 100%; position: relative;" id="screenshotsContainer">
+                        <!-- Screenshots se cargarán aquí -->
+                    </div>
+                    <!-- Indicadores de progreso -->
+                    <div id="carruselIndicators" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="juego-resenas" style="margin-top: 40px;">
         <h2 style="color: #66c0f4; margin-bottom: 20px;">Reseñas ({{ $resenas->total() }})</h2>
 
@@ -94,21 +112,11 @@
                             </div>
                             <div style="text-align: right;">
                                 <!-- Calificación en estrellas -->
-                                <div style="color: #ffd700; font-size: 16px; margin-bottom: 5px;">
+                                <div style="color: #ffd700; font-size: 18px;">
                                     @for($i = 1; $i <= 5; $i++)
                                         <span style="color: {{ $i <= $resena->calificacion ? '#ffd700' : '#8b8e91' }};">★</span>
                                     @endfor
-                                    <span style="color: #8b8e91; font-size: 12px; margin-left: 5px;">{{ $resena->calificacion }}/5</span>
-                                </div>
-                                <!-- Recomendación -->
-                                <div style="font-size: 14px;">
-                                    @if($resena->recomendacion)
-                                        <i class='bx bx-thumbs-up' style="color: #1db954;"></i>
-                                        <span style="color: #1db954;">Recomendado</span>
-                                    @else
-                                        <i class='bx bx-thumbs-down' style="color: #c7302a;"></i>
-                                        <span style="color: #c7302a;">No recomendado</span>
-                                    @endif
+                                    <span style="color: #8b8e91; font-size: 12px; margin-left: 8px; display: block; margin-top: 4px;">{{ $resena->calificacion }}/5</span>
                                 </div>
                             </div>
                         </div>
@@ -116,11 +124,9 @@
                         
                         @if(Auth::user()->id === $resena->usuario_id || Auth::user()->isAdmin())
                             <div style="margin-top: 10px;">
-                                <form method="POST" action="{{ route('resena.destroy', $resena->id) }}" style="display: inline;" onsubmit="return confirm('¿Eliminar esta reseña?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">Eliminar</button>
-                                </form>
+                                <button type="button" onclick="abrirConfirmacionEliminar({{ $resena->id }})" class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class='bx bx-trash'></i> Eliminar
+                                </button>
                             </div>
                         @endif
                     </article>
@@ -239,13 +245,16 @@ async function cargarScreenshots(titulo) {
         if (data.success && data.screenshots && data.screenshots.length > 0) {
             const container = document.getElementById('screenshotsContainer');
             const carrusel = document.getElementById('carruselScreenshots');
+            const indicatorsContainer = document.getElementById('carruselIndicators');
             
             // Guardar screenshots para navegación
             screenshotsActuales = data.screenshots;
             
             container.innerHTML = '';
+            indicatorsContainer.innerHTML = '';
             
             let activeIndex = 0;
+            let autoPlayInterval = null;
             
             data.screenshots.forEach((screenshot, index) => {
                 const wrapper = document.createElement('div');
@@ -258,8 +267,10 @@ async function cargarScreenshots(titulo) {
                     overflow: hidden;
                     cursor: pointer;
                     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                    width: ${index === activeIndex ? '240px' : '60px'};
+                    width: ${index === activeIndex ? '350px' : '100px'};
                     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    transform: ${index === activeIndex ? 'scale(1)' : 'scale(0.9)'};
+                    z-index: ${index === activeIndex ? '10' : '1'};
                 `;
                 
                 const img = document.createElement('img');
@@ -303,15 +314,16 @@ async function cargarScreenshots(titulo) {
                 
                 // Evento hover
                 wrapper.addEventListener('mouseenter', () => {
-                    // Actualizar todos los wrappers
-                    const allWrappers = container.querySelectorAll('.screenshot-wrapper');
-                    allWrappers.forEach((w, i) => {
-                        const isActive = i === index;
-                        w.style.width = isActive ? '240px' : '60px';
-                        w.querySelector('.screenshot-overlay').style.opacity = isActive ? '1' : '0';
-                        w.querySelector('.screenshot-number').style.opacity = isActive ? '1' : '0';
-                    });
-                    activeIndex = index;
+                    updateActiveScreenshot(index);
+                    // Pausar autoplay al hover
+                    if (window.autoPlayInterval) {
+                        clearInterval(window.autoPlayInterval);
+                    }
+                });
+                
+                wrapper.addEventListener('mouseleave', () => {
+                    // Reanudar autoplay
+                    startAutoPlay();
                 });
                 
                 wrapper.addEventListener('click', () => {
@@ -319,6 +331,68 @@ async function cargarScreenshots(titulo) {
                 });
                 
                 container.appendChild(wrapper);
+                
+                // Crear indicador
+                const indicator = document.createElement('div');
+                indicator.style.cssText = `
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: ${index === activeIndex ? '#66c0f4' : '#417a9b'};
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                `;
+                indicator.addEventListener('click', () => {
+                    updateActiveScreenshot(index);
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+            
+            // Función para actualizar screenshot activo
+            function updateActiveScreenshot(newIndex) {
+                const allWrappers = container.querySelectorAll('.screenshot-wrapper');
+                const allIndicators = indicatorsContainer.querySelectorAll('div');
+                
+                allWrappers.forEach((w, i) => {
+                    const isActive = i === newIndex;
+                    w.style.width = isActive ? '350px' : '100px';
+                    w.style.transform = isActive ? 'scale(1)' : 'scale(0.9)';
+                    w.style.zIndex = isActive ? '10' : '1';
+                    w.querySelector('.screenshot-overlay').style.opacity = isActive ? '1' : '0';
+                    w.querySelector('.screenshot-number').style.opacity = isActive ? '1' : '0';
+                });
+                
+                allIndicators.forEach((indicator, i) => {
+                    indicator.style.background = i === newIndex ? '#66c0f4' : '#417a9b';
+                    indicator.style.transform = i === newIndex ? 'scale(1.2)' : 'scale(1)';
+                });
+                
+                activeIndex = newIndex;
+            }
+            
+            // Función para autoplay
+            function startAutoPlay() {
+                if (window.autoPlayInterval) {
+                    clearInterval(window.autoPlayInterval);
+                }
+                window.autoPlayInterval = setInterval(() => {
+                    const nextIndex = (activeIndex + 1) % data.screenshots.length;
+                    updateActiveScreenshot(nextIndex);
+                }, 2500); // Cambiar cada 2.5 segundos
+            }
+            
+            // Iniciar autoplay
+            startAutoPlay();
+            
+            // Pausar autoplay cuando el usuario no está en la pestaña
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    if (window.autoPlayInterval) {
+                        clearInterval(window.autoPlayInterval);
+                    }
+                } else {
+                    startAutoPlay();
+                }
             });
             
             carrusel.style.display = 'block';
@@ -383,6 +457,123 @@ function mostrarScreenshotSiguiente() {
     }
 }
 
+</script>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div id="modalConfirmacionEliminar" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.3s ease;">
+    <div style="background: linear-gradient(135deg, #1b3a52 0%, #0d1929 100%); border: 2px solid #2a5f7f; border-radius: 12px; padding: 40px; max-width: 450px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); animation: slideUp 0.4s ease;">
+        
+        <!-- Icono de advertencia -->
+        <div style="text-align: center; margin-bottom: 25px;">
+            <i class='bx bx-trash' style="font-size: 48px; color: #c7302a;"></i>
+        </div>
+
+        <!-- Título -->
+        <h2 style="color: #dfe3e6; text-align: center; margin: 0 0 15px 0; font-size: 1.5rem; font-weight: 700;">
+            ¿Eliminar reseña?
+        </h2>
+
+        <!-- Mensaje -->
+        <p style="color: #8b8e91; text-align: center; margin: 0 0 30px 0; font-size: 1rem; line-height: 1.5;">
+            Esta acción no se puede deshacer. Tu reseña será eliminada permanentemente.
+        </p>
+
+        <!-- Botones -->
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button type="button" onclick="cerrarConfirmacionEliminar()" style="background: #2a475e; color: #dfe3e6; border: 1px solid #3d5a73; padding: 12px 30px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; min-width: 140px;">
+                Cancelar
+            </button>
+            <button type="button" id="btnEliminarConfirmado" onclick="confirmarEliminacion()" style="background: linear-gradient(135deg, #c7302a 0%, #a02622 100%); color: white; border: none; padding: 12px 30px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; min-width: 140px;">
+                <i class='bx bx-trash'></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos de animación -->
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#modalConfirmacionEliminar button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#btnEliminarConfirmado:hover {
+    background: linear-gradient(135deg, #e63c32 0%, #b82d28 100%);
+}
+</style>
+
+<!-- JavaScript -->
+<script>
+let resenaIdAEliminar = null;
+
+function abrirConfirmacionEliminar(resenaId) {
+    resenaIdAEliminar = resenaId;
+    document.getElementById('modalConfirmacionEliminar').style.display = 'flex';
+}
+
+function cerrarConfirmacionEliminar() {
+    document.getElementById('modalConfirmacionEliminar').style.display = 'none';
+    resenaIdAEliminar = null;
+}
+
+function confirmarEliminacion() {
+    if (resenaIdAEliminar) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/ProyectoAlberto-Steam-Laravel/public/resena/${resenaIdAEliminar}`;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '_token';
+        tokenInput.value = csrfToken;
+        
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        
+        form.appendChild(tokenInput);
+        form.appendChild(methodInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Cerrar modal al presionar Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        cerrarConfirmacionEliminar();
+    }
+});
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('modalConfirmacionEliminar').addEventListener('click', function(event) {
+    if (event.target === this) {
+        cerrarConfirmacionEliminar();
+    }
+});
 </script>
 
 @endsection

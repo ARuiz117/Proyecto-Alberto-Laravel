@@ -1,0 +1,585 @@
+/* Filtrado de juegos */
+
+/* Grid principal */
+.juegos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+    /* Optimización */
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Juego cards con animaciones */
+.juego-card {
+    /* Transiciones suaves */
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Aceleración hardware */
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    /* Renderizado suave */
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Sin cambios bruscos */
+    position: relative;
+    width: 100%;
+}
+
+/* Estados base */
+.juego-card {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    pointer-events: auto;
+}
+
+/* Estado oculto */
+.juego-card[style*="opacity: 0"] {
+    pointer-events: none;
+    /* Optimización */
+    transform: translate3d(0, 20px, 0) scale3d(0.9, 0.9, 0.9);
+}
+
+/* Efecto hover */
+.juego-card:hover {
+    transform: translate3d(0, -2px, 0) scale3d(1.02, 1.02, 1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Input de búsqueda */
+#filtroJuegos {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Optimización */
+    transform: translateZ(0);
+}
+
+#filtroJuegos:focus {
+    box-shadow: 0 0 15px rgba(102, 192, 244, 0.3);
+    border-color: #66c0f4;
+    transform: translateZ(0);
+}
+
+/* Mensaje de no resultados */
+.no-resultados {
+    animation: fadeInUp60fps 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Optimización */
+    transform: translateZ(0);
+}
+
+@keyframes fadeInUp60fps {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* Optimizaciones adicionales */
+@media (min-resolution: 120dpi) {
+    .juego-card {
+        /* Alta resolución */
+        will-change: transform, opacity;
+        transform: translateZ(0);
+    }
+}
+
+/* Accesibilidad - sin animaciones */
+@media (prefers-reduced-motion: reduce) {
+    .juego-card {
+        transition: none;
+        transform: none !important;
+    }
+    
+    .no-resultados {
+        animation: none;
+    }
+}
+
+/* Efecto visual */
+#filtroJuegos.buscando-activo {
+    border-color: #66c0f4 !important;
+    box-shadow: 0 0 12px rgba(102, 192, 244, 0.3) !important;
+    background: rgba(102, 192, 244, 0.05) !important;
+}
+
+/* Transiciones */
+#filtroJuegos {
+    transition: border-color 0.2s ease-out, 
+                box-shadow 0.2s ease-out,
+                background 0.2s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .juego-card {
+        transition: opacity 0.5s ease-out, 
+                    transform 0.5s ease-out,
+                    box-shadow 0.3s ease-out;
+    }
+    
+    @keyframes juegoEntraIzquierda {
+        0% {
+            opacity: 0;
+            transform: translateX(-40px) scale(0.94);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+    
+    @keyframes juegoSaleDerecha {
+        0% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(60px) scale(0.96);
+        }
+    }
+    
+    @keyframes juegoRegresaIzquierda {
+        0% {
+            opacity: 0.9;
+            transform: translateX(-20px) scale(0.98);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .juego-card {
+        transition: opacity 0.4s ease-out, 
+                    transform 0.4s ease-out;
+    }
+    
+    @keyframes juegoEntraIzquierda {
+        0% {
+            opacity: 0;
+            transform: translateX(-30px) scale(0.96);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+    
+    @keyframes juegoSaleDerecha {
+        0% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(40px) scale(0.98);
+        }
+    }
+    
+    @keyframes juegoRegresaIzquierda {
+        0% {
+            opacity: 0.9;
+            transform: translateX(-15px) scale(0.99);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+}
+
+/* ============================================
+   ESTILOS MEJORADOS PARA FILTROS
+   ============================================ */
+
+/* Contenedor búsqueda */
+.busqueda-juegos {
+    position: relative;
+    overflow: visible;
+}
+
+.busqueda-juegos::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 192, 244, 0.05) 0%, rgba(65, 122, 155, 0.05) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ============================================
+   DESPLEGABLE PERSONALIZADO CON ANIMACIONES
+   ============================================ */
+
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-trigger {
+    background: linear-gradient(135deg, #0a1929 0%, #1a2332 100%);
+    border: 1px solid #417a9b;
+    border-radius: 6px;
+    padding: 12px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-select-trigger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 192, 244, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.custom-select-trigger:hover::before {
+    left: 100%;
+}
+
+.custom-select-trigger:hover {
+    border-color: #66c0f4;
+    box-shadow: 0 4px 12px rgba(102, 192, 244, 0.2);
+    transform: translateY(-1px);
+}
+
+.custom-select-trigger.active {
+    border-color: #66c0f4;
+    box-shadow: 0 0 0 3px rgba(102, 192, 244, 0.1);
+    transform: translateY(-1px);
+}
+
+.selected-value {
+    color: #dfe3e6;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.select-arrow {
+    color: #66c0f4;
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.custom-select-trigger.active .select-arrow {
+    transform: rotate(180deg);
+}
+
+/* Opciones */
+.custom-select-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #0a1929 0%, #1a2332 100%);
+    border: 1px solid #417a9b;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 400px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+}
+
+.custom-select-options.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Opción individual */
+.custom-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(65, 122, 155, 0.2);
+    position: relative;
+    overflow: hidden;
+    animation: slideInOption 0.3s ease-out backwards;
+}
+
+.custom-option:last-child {
+    border-bottom: none;
+}
+
+/* Animación opciones */
+.custom-option:nth-child(1) { animation-delay: 0.05s; }
+.custom-option:nth-child(2) { animation-delay: 0.1s; }
+.custom-option:nth-child(3) { animation-delay: 0.15s; }
+.custom-option:nth-child(4) { animation-delay: 0.2s; }
+.custom-option:nth-child(5) { animation-delay: 0.25s; }
+.custom-option:nth-child(6) { animation-delay: 0.3s; }
+.custom-option:nth-child(7) { animation-delay: 0.35s; }
+.custom-option:nth-child(8) { animation-delay: 0.4s; }
+.custom-option:nth-child(9) { animation-delay: 0.45s; }
+
+@keyframes slideInOption {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px) rotateY(-15deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotateY(0);
+    }
+}
+
+.custom-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 192, 244, 0.1), transparent);
+    transition: left 0.4s ease;
+}
+
+.custom-option:hover::before {
+    left: 100%;
+}
+
+.custom-option:hover {
+    background: linear-gradient(135deg, #1a2b3a 0%, #2a3b4a 100%);
+    padding-left: 20px;
+    transform: translateX(5px);
+}
+
+.custom-option.selected {
+    background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%);
+    color: #66c0f4;
+}
+
+.custom-option.selected .option-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.option-icon {
+    font-size: 18px;
+    margin-right: 12px;
+    transition: transform 0.3s ease;
+}
+
+.custom-option:hover .option-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.option-text {
+    flex: 1;
+    color: #dfe3e6;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.custom-option:hover .option-text {
+    color: #66c0f4;
+}
+
+.option-check {
+    color: #66c0f4;
+    font-size: 16px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+}
+
+/* Partículas */
+.custom-select-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+    background: radial-gradient(circle, rgba(102, 192, 244, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: all 0.4s ease;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.custom-select-container:hover::before {
+    opacity: 1;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Brillo */
+.custom-select-container::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #66c0f4, #417a9b, #66c0f4);
+    border-radius: 8px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+}
+
+.custom-select-container:hover::after {
+    opacity: 0.6;
+}
+
+/* Input búsqueda */
+.search-wrapper input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.search-wrapper input:hover {
+    border-color: #66c0f4;
+    box-shadow: 0 4px 12px rgba(102, 192, 244, 0.2);
+    transform: translateY(-1px);
+}
+
+.search-wrapper input:focus {
+    outline: none;
+    border-color: #66c0f4;
+    box-shadow: 0 0 0 3px rgba(102, 192, 244, 0.1);
+}
+
+.search-wrapper input::placeholder {
+    color: #8b8e91;
+    font-style: italic;
+}
+
+/* Filtro activo */
+.busqueda-juegos .filtro-activo {
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Botón limpiar */
+.busqueda-juegos .btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Animación filtros */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.filtro-genero,
+.search-container {
+    animation: fadeInScale 0.5s ease-out;
+}
+
+.search-container {
+    animation-delay: 0.1s;
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+    .juego-card {
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    }
+    
+    .juego-card.filtrado-oculto {
+        transform: scale(0.99) translateY(2px);
+    }
+    
+    .busqueda-juegos {
+        padding: 1.5rem !important;
+    }
+    
+    .busqueda-juegos h3 {
+        font-size: 0.85rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .filtro-genero,
+    .search-container {
+        min-width: 100% !important;
+    }
+    
+    .busqueda-juegos > div {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        align-items: center !important;
+    }
+    
+    .custom-select-container::after,
+    .custom-select-container::before {
+        display: none;
+    }
+    
+    .custom-select-options {
+        max-height: 250px;
+    }
+}

@@ -1,0 +1,193 @@
+/* Ventanas modales */
+
+/* Base para todos los modales */
+.modal-steam {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Contenedor del modal */
+.modal-steam-content {
+    background: linear-gradient(135deg, #2a475e 0%, #1f3a4d 100%);
+    border: 1px solid #417a9b;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease;
+}
+
+/* Título del modal */
+.modal-steam-title {
+    color: #66c0f4;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-steam-title i {
+    font-size: 1.8rem;
+}
+
+/* Mensaje del modal */
+.modal-steam-message {
+    color: #c7d5e0;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 1.5rem 0;
+}
+
+/* Contenedor de botones */
+.modal-steam-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Botones base */
+.modal-steam-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Botón primario (confirmar) */
+.modal-steam-btn-primary {
+    background: linear-gradient(135deg, #1db954 0%, #1aa34a 100%);
+    color: white;
+}
+
+.modal-steam-btn-primary:hover {
+    background: linear-gradient(135deg, #1aa34a 0%, #168e40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
+/* Botón peligro (eliminar) */
+.modal-steam-btn-danger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+}
+
+.modal-steam-btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* Botón secundario (cancelar) */
+.modal-steam-btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+}
+
+.modal-steam-btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: scale(0.8) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .modal-steam-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .modal-steam-title {
+        font-size: 1.3rem;
+    }
+    
+    .modal-steam-buttons {
+        flex-direction: column;
+    }
+    
+    .modal-steam-btn {
+        width: 100%;
+    }
+}
+
+/* Overlay con blur */
+.modal-steam::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+/* Iconos específicos */
+.modal-icon-user i::before {
+    content: '\eb87'; /* bx-user */
+}
+
+.modal-icon-game i::before {
+    content: '\eac1'; /* bx-game */
+}
+
+.modal-icon-warning i::before {
+    content: '\ea0b'; /* bx-error */
+}
+
+.modal-icon-trash i::before {
+    content: '\ed68'; /* bx-trash */
+}
+
+/* Estados especiales */
+.modal-steam.confirming .modal-steam-btn-primary {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}

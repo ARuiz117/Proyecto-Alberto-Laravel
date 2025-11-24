@@ -27,7 +27,7 @@
     
     <form method="POST" action="{{ route('login') }}">
         @csrf
-        <input type="text" name="usuario" placeholder="Usuario" required class="form-input" value="{{ old('usuario') }}" />
+        <input type="text" name="usuario" placeholder="Usuario o Email" required class="form-input" value="{{ old('usuario') }}" />
         <input type="password" name="clave" placeholder="Clave" required class="form-input" />
         <button type="submit" class="btn btn-primary">Entrar</button>
     </form>

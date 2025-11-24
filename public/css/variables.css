@@ -1,0 +1,52 @@
+/* ============================================
+   VARIABLES CSS - Colores y espaciado global
+   ============================================ */
+
+:root {
+  /* Colores Steam */
+  --steam-blue: #66c0f4;
+  --steam-blue-dark: #417a9b;
+  --steam-blue-darker: #1a4d6d;
+  
+  --steam-green: #1db954;
+  --steam-green-dark: #1aa34a;
+  --steam-green-darker: #0d5a2f;
+  
+  --steam-red: #e63946;
+  --steam-red-dark: #d62828;
+  --steam-red-darker: #a01818;
+  
+  --steam-bg-primary: #171a21;
+  --steam-bg-secondary: #1e2832;
+  --steam-bg-tertiary: #2a475e;
+  
+  --steam-border: #363c44;
+  --steam-text-primary: #c7d5e0;
+  --steam-text-secondary: #8F98A0;
+  --steam-text-muted: #5a6c7d;
+  
+  /* Espaciado */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 2.5rem;
+  
+  /* Bordes */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.4);
+  
+  /* Transiciones */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.4s ease;
+}

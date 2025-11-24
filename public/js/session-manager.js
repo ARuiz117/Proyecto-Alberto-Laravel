@@ -1,7 +1,7 @@
-// Gestión de cookies y timeout de sesión
+// Control de sesión y cookies
 class SessionManager {
     constructor() {
-        this.timeoutDuration = 4 * 60 * 1000; // 4 minutos en milisegundos
+        this.timeoutDuration = 2.5 * 60 * 1000; // 2:30 minutos (150 segundos)
         this.warningTime = 30 * 1000; // Advertencia 30 segundos antes
         this.timeoutId = null;
         this.warningId = null;
@@ -14,19 +14,18 @@ class SessionManager {
         // Mostrar banner de cookies si no se han aceptado
         if (!this.cookiesAccepted) {
             this.showCookieBanner();
-        } else {
-            // Solo iniciar timeout si las cookies están aceptadas y hay sesión
-            if (this.hasActiveSession()) {
-                this.startSessionTimeout();
-                this.bindActivityEvents();
-            }
+        }
+        
+        // Iniciar timeout si hay sesión activa
+        if (this.hasActiveSession()) {
+            this.startSessionTimeout();
+            this.bindActivityEvents();
         }
     }
     
     hasActiveSession() {
-        // Verificar si hay una sesión activa (esto se puede ajustar según tu implementación)
-        return document.body.classList.contains('logged-in') || 
-               window.location.pathname.includes('biblioteca.php');
+        // Verificar si hay sesión activa
+        return document.body.classList.contains('logged-in');
     }
     
     showCookieBanner() {
@@ -37,7 +36,7 @@ class SessionManager {
                 <div class="cookie-text">
                     <h3>🍪 Uso de Cookies</h3>
                     <p>Utilizamos cookies para mejorar tu experiencia y gestionar tu sesión de forma segura. 
-                    Al aceptar, tu sesión se cerrará automáticamente después de 4 minutos de inactividad por seguridad.</p>
+                    Al aceptar, tu sesión se cerrará automáticamente después de 2:30 minutos de inactividad por seguridad.</p>
                 </div>
                 <div class="cookie-buttons">
                     <button onclick="sessionManager.acceptCookies()" class="btn btn-primary">Aceptar Cookies</button>
@@ -48,7 +47,7 @@ class SessionManager {
         
         document.body.appendChild(banner);
         
-        // Agregar estilos
+        // Estilos del banner
         const style = document.createElement('style');
         style.textContent = `
             #cookie-banner {
@@ -134,7 +133,7 @@ class SessionManager {
         }
         
         // Mostrar mensaje de confirmación
-        this.showNotification('Cookies aceptadas. Tu sesión se cerrará automáticamente después de 4 minutos de inactividad.', 'success');
+        this.showNotification('Cookies aceptadas. Tu sesión se cerrará automáticamente después de 2:30 minutos de inactividad.', 'success');
     }
     
     rejectCookies() {
@@ -143,7 +142,7 @@ class SessionManager {
         
         // Si hay sesión activa, cerrarla inmediatamente
         if (this.hasActiveSession()) {
-            window.location.href = 'logout.php';
+            this.performLogout();
         }
     }
     
@@ -158,19 +157,19 @@ class SessionManager {
     startSessionTimeout() {
         this.clearTimeouts();
         
-        // Advertencia 30 segundos antes
+        // Advertencia a los 2 minutos (2:30 - 0:30 = 2:00)
         this.warningId = setTimeout(() => {
             this.showSessionWarning();
         }, this.timeoutDuration - this.warningTime);
         
-        // Cierre automático después de 4 minutos
+        // Cierre automático a los 2:30 minutos
         this.timeoutId = setTimeout(() => {
             this.logoutUser();
         }, this.timeoutDuration);
     }
     
     resetSessionTimeout() {
-        if (this.cookiesAccepted && this.hasActiveSession()) {
+        if (this.hasActiveSession()) {
             this.startSessionTimeout();
         }
     }
@@ -232,6 +231,7 @@ class SessionManager {
     startCountdown() {
         let secondsLeft = 30;
         const timerElement = document.getElementById('countdown-timer');
+        const self = this; // Guardar referencia a 'this'
         
         const countdownInterval = setInterval(() => {
             secondsLeft--;
@@ -248,6 +248,8 @@ class SessionManager {
             
             if (secondsLeft <= 0) {
                 clearInterval(countdownInterval);
+                // Cerrar sesión cuando el contador llega a 0
+                self.performLogout();
             }
         }, 1000);
     }
@@ -257,14 +259,26 @@ class SessionManager {
         if (warning) warning.remove();
         
         this.resetSessionTimeout();
-        this.showNotification('Sesión extendida por 4 minutos más.', 'success');
+        this.showNotification('Sesión extendida por 1 minuto más.', 'success');
     }
     
     logoutUser() {
         this.showNotification('Sesión cerrada por inactividad.', 'info');
         setTimeout(() => {
-            window.location.href = 'logout.php';
+            this.performLogout();
         }, 2000);
+    }
+    
+    performLogout() {
+        // Usar el formulario oculto que ya está en el HTML
+        const logoutForm = document.getElementById('auto-logout-form');
+        
+        if (logoutForm) {
+            logoutForm.submit();
+        } else {
+            // Fallback: redirigir a login usando la ruta base
+            window.location.href = window.location.origin + '/ProyectoAlberto-Steam-Laravel/public/login';
+        }
     }
     
     showNotification(message, type = 'info') {
@@ -281,7 +295,7 @@ class SessionManager {
             color: white;
             font-weight: 600;
             z-index: 1002;
-            animation: slideInRight 0.3s ease-out;
+            animation: fadeInDown 0.5s ease-out;
             max-width: 300px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         `;
@@ -300,9 +314,9 @@ class SessionManager {
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            notification.style.animation = 'slideOutRight 0.3s ease-in';
-            setTimeout(() => notification.remove(), 300);
-        }, 5000);
+            notification.style.animation = 'fadeOutUp 0.4s ease-in';
+            setTimeout(() => notification.remove(), 400);
+        }, 3000);
     }
     
     // Utilidades para cookies
@@ -346,6 +360,28 @@ additionalStyles.textContent = `
     @keyframes slideOutRight {
         from { transform: translateX(0); opacity: 1; }
         to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    @keyframes fadeInDown {
+        from { 
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeOutUp {
+        from { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+        to { 
+            opacity: 0;
+            transform: translateY(-20px);
+        }
     }
     
     @keyframes pulse {

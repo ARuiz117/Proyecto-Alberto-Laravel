@@ -1,0 +1,496 @@
+/* ============================================
+   Perfil CSS - Estilos específicos para el perfil
+   Reutiliza componentes globales de components.css y app.css
+   ============================================ */
+
+/* Contenedor principal - usa .main de app.css */
+.profile-main {
+    padding: 2rem;
+}
+
+/* Header del perfil */
+.profile-header {
+    background: #171a21;
+    border: 1px solid #363c44;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.profile-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.profile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #1b5e8f 0%, #2a7cac 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #66c0f4;
+    border: 2px solid #1b5e8f;
+    box-shadow: 0 4px 8px rgba(26, 82, 118, 0.3);
+}
+
+.profile-title {
+    color: #66c0f4;
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.profile-subtitle {
+    color: #8F98A0;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.profile-balance {
+    background: #171a21;
+    border: 1px solid #1db954;
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(29, 185, 84, 0.2);
+}
+
+.balance-label {
+    color: #8F98A0;
+    margin: 0 0 0.5rem 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.balance-amount {
+    color: #1db954;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* Layout principal */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+}
+
+/* Navegación lateral */
+.profile-sidebar {
+    background: #171a21;
+    border: 1px solid #363c44;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-title {
+    color: #66c0f4;
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    color: #8F98A0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(102, 192, 244, 0.05);
+    color: #66c0f4;
+}
+
+.nav-link.active {
+    background: rgba(102, 192, 244, 0.1);
+    color: #66c0f4;
+    border-left: 3px solid #66c0f4;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+}
+
+/* Contenido principal */
+.profile-content {
+    background: #171a21;
+    border: 1px solid #363c44;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.content-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #363c44;
+}
+
+.content-title {
+    color: #66c0f4;
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.title-icon {
+    color: #1db954;
+    font-size: 1.3rem;
+}
+
+.content-subtitle {
+    color: #8F98A0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Alertas - usa estilos de components.css */
+.alert {
+    background: rgba(29, 185, 84, 0.1);
+    border: 1px solid #1db954;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert-icon {
+    color: #1db954;
+    font-size: 1.2rem;
+}
+
+.alert-message {
+    color: #1db954;
+    font-weight: 500;
+}
+
+/* Formularios - usa .form-input de components.css */
+.profile-form {
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #c7d5e0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.label-icon {
+    color: #66c0f4;
+    font-size: 1rem;
+}
+
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.error-icon {
+    font-size: 0.9rem;
+}
+
+/* Botones - usa .btn de components.css */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+/* Sección de seguridad */
+.security-info {
+    background: #1e2832;
+    border: 1px solid #363c44;
+    border-radius: 6px;
+    padding: 1.5rem;
+}
+
+.security-title {
+    color: #c7d5e0;
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.security-icon {
+    color: #1db954;
+    font-size: 1.1rem;
+}
+
+.security-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.security-item {
+    color: #8F98A0;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.security-item::before {
+    content: "•";
+    color: #1db954;
+    position: absolute;
+    left: 0;
+}
+
+.security-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Grid de información */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: #1e2832;
+    border: 1px solid #363c44;
+    border-radius: 6px;
+    padding: 1.5rem;
+}
+
+.info-label {
+    color: #8F98A0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.info-value {
+    color: #c7d5e0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.info-value.highlight {
+    color: #1db954;
+    font-weight: 600;
+}
+
+/* Historial de compras */
+.history-list {
+    margin-bottom: 2rem;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e2832;
+    border: 1px solid #363c44;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(26, 82, 118, 0.2);
+    border-color: #1b5e8f;
+}
+
+.history-game-info h4 {
+    color: #c7d5e0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.history-game-info p {
+    color: #8F98A0;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.history-price {
+    color: #1db954;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: #1e2832;
+    border: 1px solid #363c44;
+    border-radius: 6px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    color: #5a6c7d;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.empty-message {
+    color: #8F98A0;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-main {
+        padding: 1rem;
+    }
+    
+    .profile-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .profile-sidebar {
+        padding: 1rem;
+    }
+    
+    .profile-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .nav-item {
+        margin-bottom: 0;
+        margin-right: 0.5rem;
+    }
+    
+    .nav-link {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    .profile-content {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .profile-title {
+        font-size: 1.5rem;
+    }
+    
+    .content-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    .profile-balance {
+        padding: 1rem 1.5rem;
+    }
+    
+    .balance-amount {
+        font-size: 1.5rem;
+    }
+    
+    .profile-content {
+        padding: 1rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+}

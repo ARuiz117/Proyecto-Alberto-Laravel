@@ -21,7 +21,6 @@ class ResenaController extends Controller
             'juego_id' => 'required|exists:juegos,id',
             'contenido' => 'required|string|min:10|max:1000',
             'calificacion' => 'required|integer|min:1|max:5',
-            'recomendacion' => 'required|boolean',
         ], [
             'contenido.required' => 'La reseña es obligatoria',
             'contenido.min' => 'La reseña debe tener al menos 10 caracteres',
@@ -29,7 +28,6 @@ class ResenaController extends Controller
             'calificacion.required' => 'La calificación es obligatoria',
             'calificacion.min' => 'La calificación debe ser de 1 a 5',
             'calificacion.max' => 'La calificación debe ser de 1 a 5',
-            'recomendacion.required' => 'Debes indicar si recomiendas el juego',
         ]);
 
         $usuario = Auth::user();
@@ -54,7 +52,7 @@ class ResenaController extends Controller
             'juego_id' => $juego->id,
             'contenido' => $request->contenido,
             'calificacion' => $request->calificacion,
-            'recomendacion' => $request->recomendacion,
+            'recomendacion' => true, // Siempre true, solo usamos estrellas
         ]);
 
         return back()->with('success', '¡Reseña creada exitosamente!');
@@ -74,7 +72,6 @@ class ResenaController extends Controller
         $request->validate([
             'contenido' => 'required|string|min:10|max:1000',
             'calificacion' => 'required|integer|min:1|max:5',
-            'recomendacion' => 'required|boolean',
         ], [
             'contenido.required' => 'La reseña es obligatoria',
             'contenido.min' => 'La reseña debe tener al menos 10 caracteres',
@@ -82,13 +79,11 @@ class ResenaController extends Controller
             'calificacion.required' => 'La calificación es obligatoria',
             'calificacion.min' => 'La calificación debe ser de 1 a 5',
             'calificacion.max' => 'La calificación debe ser de 1 a 5',
-            'recomendacion.required' => 'Debes indicar si recomiendas el juego',
         ]);
 
         $resena->update([
             'contenido' => $request->contenido,
             'calificacion' => $request->calificacion,
-            'recomendacion' => $request->recomendacion,
         ]);
 
         return back()->with('success', '¡Reseña actualizada exitosamente!');

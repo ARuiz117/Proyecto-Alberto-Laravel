@@ -1,0 +1,109 @@
+/* Botones de tienda */
+
+/* Botón de Detalles */
+.btn-detalles {
+    background: linear-gradient(135deg, #66c0f4 0%, #417a9b 100%);
+    color: #fff;
+    border: 1px solid #1a4d6d;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-detalles:hover {
+    background: linear-gradient(135deg, #7ecbff 0%, #5a8fb5 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(102, 192, 244, 0.6);
+}
+
+.btn-detalles:active {
+    transform: translateY(0);
+}
+
+/* Botón de Reseña */
+.btn-resena {
+    background: linear-gradient(135deg, #1db954 0%, #1aa34a 100%);
+    color: white;
+    border: 1px solid #0d5a2f;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-resena:hover {
+    background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(29, 185, 84, 0.6);
+}
+
+.btn-resena:active {
+    transform: translateY(0);
+}
+
+/* Botón de Devolver */
+.btn-devolver {
+    background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+    color: white;
+    border: 1px solid #a01818;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-devolver:hover {
+    background: linear-gradient(135deg, #f44336 0%, #e63946 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(230, 57, 70, 0.6);
+}
+
+.btn-devolver:active {
+    transform: translateY(0);
+}
+
+/* Estilos para contenedor de acciones */
+.juego-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.juego-acciones .btn {
+    width: 100%;
+    margin: 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    border: none;
+}
+
+/* Responsive para botones */
+@media (max-width: 768px) {
+    .btn-detalles,
+    .btn-resena,
+    .btn-devolver,
+    .juego-acciones .btn {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
+}

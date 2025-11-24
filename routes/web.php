@@ -9,6 +9,8 @@ use App\Http\Controllers\TiendaController;
 use App\Http\Controllers\ResenaController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TrailerController;
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\WalletController;
 use App\Models\Usuario;
 
 // Redirigir raíz al login
@@ -25,6 +27,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth')->group(function () {
+    // Cambio de contraseña
+    Route::get('/cambiar-contrasena', [AuthController::class, 'showChangePassword'])->name('password.change.show');
+    Route::post('/cambiar-contrasena', [AuthController::class, 'changePassword'])->name('password.change');
+    
+    // Perfil de usuario
+    Route::get('/perfil/info', [AuthController::class, 'showProfileInfo'])->name('profile.info');
+    Route::get('/perfil/historial', [AuthController::class, 'showProfileHistory'])->name('profile.history');
     // Tienda
     Route::get('/tienda', [TiendaController::class, 'index'])->name('tienda.index');
     Route::get('/tienda/juego/{id}', [TiendaController::class, 'show'])->name('tienda.show');
@@ -35,12 +44,26 @@ Route::middleware('auth')->group(function () {
     Route::post('/biblioteca/comprar', [BibliotecaController::class, 'comprar'])->name('biblioteca.comprar');
     Route::post('/biblioteca/devolver', [BibliotecaController::class, 'devolver'])->name('biblioteca.devolver');
     
+    // Búsqueda AJAX (tiempo real)
+    Route::get('/buscar/ajax', [TiendaController::class, 'buscarAjax'])->name('tienda.buscar.ajax');
+    
     // Carrito
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
     Route::post('/carrito/agregar', [CarritoController::class, 'agregar'])->name('carrito.agregar');
     Route::post('/carrito/eliminar', [CarritoController::class, 'eliminar'])->name('carrito.eliminar');
     Route::post('/carrito/vaciar', [CarritoController::class, 'vaciar'])->name('carrito.vaciar');
     Route::post('/carrito/comprar', [CarritoController::class, 'comprar'])->name('carrito.comprar');
+    
+    // Stripe Checkout
+    Route::post('/stripe/checkout', [StripeController::class, 'checkout'])->name('stripe.checkout');
+    Route::post('/stripe/confirm', [StripeController::class, 'confirm'])->name('stripe.confirm');
+    Route::get('/stripe/cancel', [StripeController::class, 'cancel'])->name('stripe.cancel');
+    
+    // Wallet (Cargar Saldo)
+    Route::get('/wallet', [WalletController::class, 'show'])->name('wallet.show');
+    Route::post('/wallet/topup', [WalletController::class, 'topup'])->name('wallet.topup');
+    Route::post('/wallet/confirm', [WalletController::class, 'confirm'])->name('wallet.confirm');
+    Route::get('/wallet/cancel', [WalletController::class, 'cancel'])->name('wallet.cancel');
     
     // Reseñas
     Route::post('/resena/crear', [ResenaController::class, 'store'])->name('resena.store');

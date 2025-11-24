@@ -1,32 +1,38 @@
 /* ============================================
-   COMPONENTS.CSS - Componentes Reutilizables
-   Contiene: Botones, Formularios, Mensajes, Badge
+   Componentes CSS - Componentes Reutilizables Globales
+   Contiene: Botones base, Formularios, Mensajes, Badge
+   Usa variables de variables.css
    ============================================ */
 
-/* Botones Base - Estética Steam */
+/* ============================================
+   Botones - Estética Steam
+   ============================================ */
+/* Componentes reutilizables */
+
+/* Botones */
 .btn {
-  padding: 0.8rem 1.5rem;
+  padding: var(--spacing-sm) var(--spacing-lg);
   border: none;
-  border-radius: 2px;
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   font-size: 1rem;
-  transition: all 0.15s ease-in-out;
+  transition: var(--transition-fast);
   text-decoration: none;
   display: inline-block;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
-  margin: 0.5rem auto;
+  margin: var(--spacing-sm) 0;
   user-select: none;
   width: auto;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-sm);
   letter-spacing: 0.3px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #66c0f4 0%, #417a9b 100%);
+  background: linear-gradient(135deg, var(--steam-blue) 0%, var(--steam-blue-dark) 100%);
   color: #fff;
-  border: 1px solid #1a4d6d;
+  border: 1px solid var(--steam-blue-darker);
 }
 
 .btn-primary:hover {
@@ -42,15 +48,15 @@
 
 .btn-secondary {
   background: rgba(23, 26, 33, 0.8);
-  color: #66c0f4;
-  border: 1px solid #417a9b;
+  color: var(--steam-blue);
+  border: 1px solid var(--steam-blue-dark);
   padding: 0.7rem 1.2rem;
 }
 
 .btn-secondary:hover {
   background: rgba(66, 122, 155, 0.3);
   color: #7ecbff;
-  border-color: #66c0f4;
+  border-color: var(--steam-blue);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(66, 122, 155, 0.5);
 }
@@ -61,13 +67,13 @@
 }
 
 .btn-success {
-  background: linear-gradient(135deg, #1db954 0%, #1aa34a 100%);
+  background: linear-gradient(135deg, var(--steam-green) 0%, var(--steam-green-dark) 100%);
   color: white;
-  border: 1px solid #0d5a2f;
+  border: 1px solid var(--steam-green-darker);
 }
 
 .btn-success:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
+  background: linear-gradient(135deg, #1ed760 0%, var(--steam-green) 100%);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(29, 185, 84, 0.6);
 }
@@ -83,15 +89,15 @@
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+  background: linear-gradient(135deg, var(--steam-red) 0%, var(--steam-red-dark) 100%);
   color: white;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  border: 1px solid #a01818;
+  border: 1px solid var(--steam-red-darker);
 }
 
 .btn-danger:hover {
-  background: linear-gradient(135deg, #f44336 0%, #e63946 100%);
+  background: linear-gradient(135deg, #f44336 0%, var(--steam-red) 100%);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(230, 57, 70, 0.6);
 }
@@ -106,70 +112,31 @@
   text-align: center;
 }
 
-/* Botones específicos para biblioteca y tienda */
-.btn-detalles {
-  background: linear-gradient(135deg, #66c0f4 0%, #417a9b 100%);
-  color: #fff;
-  border: 1px solid #1a4d6d;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-}
-
-.btn-detalles:hover {
-  background: linear-gradient(135deg, #7ecbff 0%, #5a8fb5 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(102, 192, 244, 0.6);
-}
-
-.btn-resena {
-  background: linear-gradient(135deg, #1db954 0%, #1aa34a 100%);
-  color: white;
-  border: 1px solid #0d5a2f;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-}
-
-.btn-resena:hover {
-  background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(29, 185, 84, 0.6);
-}
-
-.btn-devolver {
-  background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
-  color: white;
-  border: 1px solid #a01818;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-}
-
-.btn-devolver:hover {
-  background: linear-gradient(135deg, #f44336 0%, #e63946 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(230, 57, 70, 0.6);
-}
-
-/* Formularios */
+/* ============================================
+   Formularios
+   ============================================ */
 .form-input {
   width: 100%;
   padding: 0.8rem;
-  margin-bottom: 1rem;
-  border: 1px solid #417a9b;
-  border-radius: 4px;
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--steam-blue-dark);
+  border-radius: var(--border-radius-sm);
   background: rgba(0, 0, 0, 0.2);
   color: #fff;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
 }
 
 .form-input:focus {
-  border-color: #66c0f4;
+  border-color: var(--steam-blue);
   outline: none;
   background: rgba(102, 192, 244, 0.1);
   box-shadow: 0 0 5px rgba(102, 192, 244, 0.5);
 }
 
-/* Buscador mejorado */
+/* ============================================
+   Buscador
+   ============================================ */
 .search-wrapper {
   position: relative;
   width: 100%;
@@ -179,12 +146,12 @@
   width: 100%;
   padding: 12px 16px;
   border: none;
-  border-bottom: 2px solid #417a9b;
+  border-bottom: 2px solid var(--steam-blue-dark);
   background: rgba(10, 25, 41, 0.8);
   color: #dfe3e6;
   font-size: 1rem;
   letter-spacing: 0.5px;
-  transition: all 0.3s ease;
+  transition: var(--transition-normal);
   box-sizing: border-box;
 }
 
@@ -195,7 +162,7 @@
 .search-wrapper input:focus {
   outline: none;
   background: rgba(10, 25, 41, 1);
-  border-bottom-color: #66c0f4;
+  border-bottom-color: var(--steam-blue);
 }
 
 .search-wrapper .focus-border {
@@ -215,14 +182,14 @@
   left: 0;
   width: 0;
   height: 100%;
-  background: linear-gradient(90deg, #66c0f4, #1db954);
+  background: linear-gradient(90deg, var(--steam-blue), var(--steam-green));
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-wrapper .focus-border::after {
   left: auto;
   right: 0;
-  background: linear-gradient(270deg, #66c0f4, #1db954);
+  background: linear-gradient(270deg, var(--steam-blue), var(--steam-green));
 }
 
 .search-wrapper input:focus ~ .focus-border::before,
@@ -230,13 +197,16 @@
   width: 50%;
 }
 
+/* ============================================
+   Contenedores de botones
+   ============================================ */
 .button-container {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0;
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
   width: 100%;
 }
 
@@ -247,14 +217,16 @@
   display: block;
 }
 
-/* Mensajes de Estado */
+/* ============================================
+   Mensajes
+   ============================================ */
 .error {
-  background-color: #e63946;
-  padding: 15px;
-  border-radius: 8px;
+  background-color: var(--steam-red);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
   color: white;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   text-align: center;
   box-shadow: 0 0 10px #e6394644;
 }
@@ -262,17 +234,17 @@
 .error-msg {
   color: #ff6b6b;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   font-weight: 600;
 }
 
 .mensaje {
   background-color: #06d6a0;
-  padding: 15px;
-  border-radius: 8px;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
   color: #034d3a;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   text-align: center;
   box-shadow: 0 0 10px #06d6a044;
 }
@@ -280,15 +252,17 @@
 .info {
   background: rgba(33, 150, 243, 0.2);
   color: #2196F3;
-  padding: 1rem;
-  border-radius: 4px;
-  margin: 1rem 0;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin: var(--spacing-md) 0;
   border-left: 4px solid #2196F3;
 }
 
-/* Badge para contador */
+/* ============================================
+   Badge y utilidades
+   ============================================ */
 .badge {
-  background: #f44336;
+  background: var(--steam-red);
   color: white;
   border-radius: 50%;
   padding: 0.2rem 0.5rem;
@@ -300,7 +274,9 @@
   text-align: center;
 }
 
-/* Formularios deshabilitados */
+/* ============================================
+   Formularios DESHABILITADOS
+   ============================================ */
 .form-disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -312,7 +288,9 @@ button:disabled {
   opacity: 0.6;
 }
 
-/* Responsive */
+/* ============================================
+   Responsive
+   ============================================ */
 @media (max-width: 600px) {
   .btn {
     width: 100%;

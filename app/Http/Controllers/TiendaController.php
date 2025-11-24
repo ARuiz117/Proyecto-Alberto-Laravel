@@ -72,4 +72,36 @@ class TiendaController extends Controller
         
         return view('tienda.index', compact('juegos', 'query', 'generos', 'generoSeleccionado'));
     }
+
+    // Búsqueda AJAX (tiempo real)
+    public function buscarAjax(Request $request)
+    {
+        $query = $request->input('q');
+        
+        // Mínimo 2 caracteres para buscar
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+        
+        $usuario = Auth::user();
+        $juegosComprados = $usuario->juegos()->pluck('juegos.id')->toArray();
+        
+        $juegos = Juego::where('titulo', 'like', "%{$query}%")
+                       ->whereNotIn('id', $juegosComprados)
+                       ->limit(5) // Limitar a 5 resultados para autocompletado
+                       ->get(['id', 'titulo', 'precio', 'imagen_url']);
+        
+        $resultados = [];
+        foreach ($juegos as $juego) {
+            $resultados[] = [
+                'id' => $juego->id,
+                'titulo' => $juego->titulo,
+                'precio' => number_format($juego->precio, 2),
+                'imagen' => $juego->imagen_url,
+                'url' => route('tienda.show', $juego->id)
+            ];
+        }
+        
+        return response()->json($resultados);
+    }
 }
