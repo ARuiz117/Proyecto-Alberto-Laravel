@@ -148,12 +148,84 @@
         <footer class="footer">
             <div class="footer-content">
                 <span class="footer-copyright">&copy; 2025 Todos los derechos reservados</span>
-                <a href="mailto:alberto.rugz@gmail.com" class="footer-email" aria-label="Enviar correo a alberto.rugz@gmail.com">
-                    <i class='bx bx-envelope'></i>
-                    alberto.rugz@gmail.com
-                </a>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                    <a href="mailto:alberto.rugz@gmail.com" class="footer-email" aria-label="Enviar correo a alberto.rugz@gmail.com">
+                        <i class='bx bx-envelope'></i>
+                        alberto.rugz@gmail.com
+                    </a>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn btn-primary" onclick="openTutorialModal()" style="display: flex; align-items: center; gap: 5px; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                            <i class='bx bx-play-circle' style="font-size: 14px;"></i>
+                            Tutorial
+                        </button>
+                        <button class="btn btn-primary" onclick="openAudioModal()" style="display: flex; align-items: center; gap: 5px; padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                            <i class='bx bx-headphone' style="font-size: 14px;"></i>
+                            Audio
+                        </button>
+                    </div>
+                </div>
             </div>
         </footer>
+    </div>
+
+    <!-- Modal del tutorial -->
+    <div id="tutorialModal" class="tutorial-modal">
+        <div class="tutorial-modal-content">
+            <div class="tutorial-modal-header">
+                <h3>🎮 ¿Cómo funciona Steam HRG?</h3>
+                <button class="tutorial-close" onclick="closeTutorialModal()">×</button>
+            </div>
+            <div class="tutorial-modal-body">
+                <div class="tutorial-video-container">
+                    <video controls style="width: 100%; max-width: 800px; height: auto;">
+                        <source src="https://rr4---sn-h5qzened.googlevideo.com/videoplayback?expire=1764436646&ei=hg4raeSTNrfcp-oPyKSG8AM&ip=146.158.139.61&id=2e9c3f9c8d4a3242&itag=22&source=contrib_service_notebooklm&begin=0&requiressl=yes&xpc=EghoqJzIP3oBAQ==&met=1764429446,&mh=fT&mm=32&mn=sn-h5qzened&ms=su&mv=m&mvi=4&pl=22&rms=su,su&sc=yes&susc=nblm&app=fife&ic=1045&eaua=49efLvKx0zY&pcm2=yes&mime=video/mp4&vprv=1&rqh=1&dur=436.558&lmt=1764421747175638&mt=1764429170&txp=0011224&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,susc,app,ic,eaua,pcm2,mime,vprv,rqh,dur,lmt&sig=AJfQdSswRgIhAMxYOdlcuuFrhHyWoJZ-hR7eR--S9CmaAw5NQVdXOjthAiEAnw_7e5HpsV7faWIgGZp3rsHtbKRdUY_gK0SXfInnAjA=&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms,sc&lsig=APaTxxMwRQIhAMxa63q703lz8VQVAtZc0FpU45bwcfkYtj3LLgRsS9kkAiAH-pJmGlfv_SCDanVEpAuYA6evBUGt_Vu08LpUENELYA==" type="video/mp4">
+                        Tu navegador no soporta video en HTML5.
+                    </video>
+                </div>
+                <div class="tutorial-info">
+                    <h4>📋 Pasos para comprar en Steam HRG:</h4>
+                    <ol>
+                        <li><strong>🔐 Inicia sesión</strong> con tu cuenta</li>
+                        <li><strong>🛍️ Explora la tienda</strong> y encuentra tus juegos</li>
+                        <li><strong>🎮 Haz clic</strong> en "Comprar" o "Añadir al carrito"</li>
+                        <li><strong>💳 Paga con tarjeta</strong> o usa tu saldo</li>
+                        <li><strong>📚 Disfruta</strong> tus juegos en la biblioteca</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del audio tutorial -->
+    <div id="audioModal" class="tutorial-modal">
+        <div class="tutorial-modal-content">
+            <div class="tutorial-modal-header">
+                <h3>🎧 Tutorial en Audio - Steam HRG</h3>
+                <button class="tutorial-close" onclick="closeAudioModal()">×</button>
+            </div>
+            <div class="tutorial-modal-body">
+                <div class="tutorial-audio-container">
+                    <audio controls style="width: 100%; max-width: 600px;">
+                        <source src="{{ asset('audio/Plano_de_un_videojuego_La_arquitectura_completa_MVC.m4a') }}" type="audio/mp4">
+                        Tu navegador no soporta audio en HTML5.
+                    </audio>
+                </div>
+                <div class="tutorial-info">
+                    <h4>🎧 Arquitectura del Videojuego - Steam HRG:</h4>
+                    <p>Audio completo sobre la arquitectura MVC del videojuego. Explicación detallada de la estructura y componentes del sistema.</p>
+                    <div class="audio-steps">
+                        <h5>📋 Contenido del audio:</h5>
+                        <ul>
+                            <li>🏗️ Arquitectura MVC completa</li>
+                            <li>💾 Base de datos y modelos</li>
+                            <li>🎮 Controladores y lógica</li>
+                            <li>🎨 Vistas y frontend</li>
+                            <li>⚙️ Flujo completo de datos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Botón Flotante Scroll hacia Arriba -->
@@ -402,6 +474,41 @@
             }, 4000);
         }
     });
+
+    // Funciones para modales de tutorial y audio
+    function openTutorialModal() {
+        document.getElementById('tutorialModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeTutorialModal() {
+        document.getElementById('tutorialModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function openAudioModal() {
+        document.getElementById('audioModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAudioModal() {
+        document.getElementById('audioModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modales al hacer clic fuera
+    window.onclick = function(event) {
+        const tutorialModal = document.getElementById('tutorialModal');
+        const audioModal = document.getElementById('audioModal');
+        
+        if (event.target == tutorialModal) {
+            closeTutorialModal();
+        }
+        if (event.target == audioModal) {
+            closeAudioModal();
+        }
+    }
+
     window.addEventListener('scroll', function() {
         const scrollBtn = document.getElementById('scrollToTopBtn');
         if (window.pageYOffset > 300) { // Mostrar después de 300px de scroll
