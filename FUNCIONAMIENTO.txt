@@ -1,0 +1,1747 @@
+================================================================================
+                    STEAM HRG - DOCUMENTACIÓN COMPLETA DEL PROYECTO
+================================================================================
+
+ÍNDICE DE CONTENIDOS:
+1. Descripción General
+2. Arquitectura y Flujo General
+3. Seguridad del Proyecto
+4. Flujo de Datos General
+5. Tecnologías Utilizadas
+6. Credenciales de Prueba
+7. Flujo Detallado de Funcionamiento
+8. Sistema de Pagos con Stripe
+9. Sistema de Billetera (Cargar Saldo)
+10. Flujo Completo de Compra
+11. Seguridad en Pagos
+12. Tecnologías de Pago
+13. Frontend Avanzado (60fps)
+14. Sistema de Filtro Optimizado
+15. Steam API Integration
+16. Session Management
+
+================================================================================
+
+CONSTRUCCIÓN DEL PROYECTO (ORDEN RECOMENDADO):
+================================================================================
+
+FASE 1: CONFIGURACIÓN INICIAL
+├─ 1. Crear proyecto Laravel: laravel new ProyectoAlberto-Steam-Laravel
+├─ 2. Configurar .env (APP_URL, DB_CONNECTION, DB_HOST, etc)
+├─ 3. Crear base de datos: misteamdb_laravel
+├─ 4. Ejecutar migraciones: php artisan migrate
+├─ 5. Crear seeders con datos iniciales
+└─ 6. Configurar HTTPS con mkcert
+
+FASE 2: AUTENTICACIÓN
+├─ 1. Crear modelo Usuario (campos: nombre, email, password, rol, saldo)
+├─ 2. Crear AuthController (login, register, logout)
+├─ 3. Crear vistas de login y registro
+├─ 4. Configurar rutas de autenticación
+├─ 5. Implementar session-manager.js (timeout 45s)
+├─ 6. Probar login/registro con usuario1 y admin1
+
+FASE 3: CATÁLOGO DE JUEGOS
+├─ 1. Crear modelo Juego (campos: titulo, descripcion, precio, imagen_url, genero, steam_id)
+├─ 2. Crear TiendaController (index, show, buscar)
+├─ 3. Crear vistas de tienda (grid, detalles)
+├─ 4. Integrar Steam API para trailers y screenshots
+├─ 5. Agregar filtro por género y búsqueda
+├─ 6. Implementar filtrado.js (60fps optimizado)
+├─ 7. Añadir animaciones requestAnimationFrame
+
+FASE 4: COMPRA CON SALDO
+├─ 1. Crear modelo Biblioteca (tabla pivote usuario-juego)
+├─ 2. Crear BibliotecaController (compra directa, devoluciones)
+├─ 3. Crear vista de biblioteca
+├─ 4. Implementar validación de saldo
+├─ 5. Probar compra y devolución
+
+FASE 5: CARRITO DE COMPRAS
+├─ 1. Crear modelo Carrito (usuario_id, juego_id, cantidad)
+├─ 2. Crear CarritoController (agregar, eliminar, vaciar, comprar)
+├─ 3. Crear vista de carrito
+├─ 4. Implementar compra múltiple desde carrito
+├─ 5. Probar flujo completo del carrito
+
+FASE 6: SISTEMA DE RESEÑAS
+├─ 1. Crear modelo Resena (usuario_id, juego_id, rating, recomendacion, comentario)
+├─ 2. Crear ResenaController (crear, actualizar, eliminar)
+├─ 3. Crear modal de reseña en biblioteca
+├─ 4. Mostrar reseñas en detalles del juego
+├─ 5. Crear modal de confirmación personalizado para eliminar
+├─ 6. Probar crear, ver y eliminar reseñas
+
+FASE 7: PANEL DE ADMINISTRACIÓN
+├─ 1. Crear AdminController (dashboard, CRUD usuarios, CRUD juegos)
+├─ 2. Crear middleware admin (verificación de rol)
+├─ 3. Crear vistas de admin (dashboard, usuarios, juegos)
+├─ 4. Implementar subida de imágenes
+├─ 5. Probar gestión completa como admin
+
+FASE 8: INTEGRACIÓN DE STRIPE
+├─ 1. Crear cuenta en stripe.com
+├─ 2. Obtener claves de prueba (pk_test_, sk_test_)
+├─ 3. Instalar librería: composer require stripe/stripe-php
+├─ 4. Configurar .env con claves de Stripe
+├─ 5. Crear StripeController (checkout, confirm, cancel)
+├─ 6. Crear vista de pago con Stripe Elements
+├─ 7. Implementar PaymentIntent API
+├─ 8. Agregar botón "Pagar con Stripe" en carrito
+├─ 9. Probar pagos con tarjetas de prueba
+
+FASE 9: SISTEMA DE BILLETERA
+├─ 1. Crear WalletController (show, topup, confirm, cancel)
+├─ 2. Crear vista de billetera (mostrar saldo, formulario de carga)
+├─ 3. Crear vista de pago de billetera (igual a Stripe)
+├─ 4. Agregar botón de saldo en header
+├─ 5. Implementar carga de saldo con Stripe
+├─ 6. Probar cargar saldo y comprar con él
+
+FASE 10: FRONTEND AVANZADO
+├─ 1. Implementar cursor.js (cursor personalizado Steam)
+├─ 2. Crear filtrado.js (60fps con requestAnimationFrame)
+├─ 3. Optimizar CSS con transform3d y GPU acceleration
+├─ 4. Implementar stagger animations (16ms timing)
+├─ 5. Añadir prefers-reduced-motion support
+├─ 6. Crear componentes.css reutilizables
+├─ 7. Optimizar rendimiento general
+
+FASE 11: MEJORAS Y PULIDO
+├─ 1. Configurar HTTPS con certificados SSL (mkcert)
+├─ 2. Arreglar rutas de imágenes (usar /imagenes/)
+├─ 3. Mejorar UI/UX de formularios
+├─ 4. Agregar animaciones 60fps profesionales
+├─ 5. Optimizar rendimiento (will-change, transform3d)
+├─ 6. Crear documentación completa
+├─ 7. Implementar timeout de sesión (45 segundos)
+└─ 8. Probar todo el flujo de usuario
+
+================================================================================
+
+1. DESCRIPCIÓN GENERAL
+================================================================================
+
+Steam HRG es una plataforma de compra y gestión de videojuegos que simula 
+la experiencia de Steam. Es un proyecto educativo desarrollado con Laravel 12, 
+PHP 8.2+, MySQL, frontend avanzado 60fps y sistema de pagos real con Stripe.
+
+CARACTERÍSTICAS PRINCIPALES:
+
+Usuarios Regulares:
+✓ Registrarse e iniciar sesión con timeout de 45 segundos
+✓ Explorar catálogo de juegos (10 juegos predefinidos)
+✓ Filtrado de búsqueda optimizado a 60fps con requestAnimationFrame
+✓ Filtrar por género y buscar por nombre con animaciones suaves
+✓ Ver detalles de juegos con trailers y screenshots desde Steam API
+✓ Comprar juegos de 2 formas:
+  - Directamente con tarjeta (Stripe)
+  - Con saldo de cuenta (cargado previamente con Stripe)
+✓ Carrito de compras con animaciones fluidas
+✓ Biblioteca personal de juegos
+✓ Sistema de reseñas (1-5 estrellas + recomendación + comentario)
+✓ Devolver juegos y recuperar dinero (100%)
+✓ Cargar saldo a la cuenta con Stripe
+✓ Experiencia visual profesional con cursor personalizado
+
+Administradores:
+✓ Gestionar usuarios (crear, editar, eliminar, cambiar rol y saldo)
+✓ Gestionar juegos (crear, editar, eliminar)
+✓ Subir imágenes de juegos
+✓ Ver estadísticas del sistema
+✓ Panel administrativo completo con dashboard
+
+CARACTERÍSTICAS TÉCNICAS AVANZADAS:
+✓ Frontend 60fps optimizado con requestAnimationFrame
+✓ GPU acceleration con transform3d y will-change
+✓ Sistema de filtro con debounce de 300ms y stagger de 16ms
+✓ Cursor personalizado tipo Steam con efectos hover
+✓ Session management con timeout automático
+✓ HTTPS configurado con mkcert
+✓ Responsive design mobile-first
+✓ Componentes CSS reutilizables
+✓ Animaciones profesionales cubic-bezier
+
+
+2. ARQUITECTURA Y FLUJO GENERAL
+================================================================================
+
+2.1 ESTRUCTURA DE CARPETAS
+├── app/
+│   ├── Http/Controllers/     → Controladores (lógica de negocio)
+│   ├── Models/               → Modelos de base de datos
+│   └── Services/             → Servicios (Steam API, etc)
+├── routes/
+│   └── web.php               → Definición de rutas
+├── resources/views/          → Vistas Blade (HTML)
+├── public/
+│   ├── css/                  → Estilos CSS
+│   ├── js/                   → JavaScript
+│   └── imagenes/             → Imágenes de juegos
+└── database/
+    ├── migrations/           → Migraciones de BD
+    └── seeders/              → Datos iniciales
+
+
+2.2 FLUJO DE AUTENTICACIÓN
+================================================================================
+
+REGISTRO:
+1. Usuario accede a /registro
+2. Completa formulario (usuario, email, contraseña)
+3. AuthController valida datos
+4. Se crea usuario en BD con:
+   - Nombre de usuario único
+   - Email único
+   - Contraseña hasheada (bcrypt)
+   - Rol: "user"
+   - Saldo inicial: 100€
+5. Redirige a login con mensaje de éxito
+
+LOGIN:
+1. Usuario accede a /login
+2. Ingresa usuario O email y contraseña
+3. AuthController busca usuario en BD por:
+   - Nombre de usuario (campo 'nombre')
+   - O por email (campo 'email')
+4. Verifica contraseña con Hash::check()
+5. Si es correcto:
+   - Inicia sesión (Auth::login())
+   - Regenera token de sesión
+   - Redirige a biblioteca
+6. Si es incorrecto: muestra error
+
+OPCIONES DE LOGIN:
+✓ Opción 1: usuario1 / usuario1
+✓ Opción 2: (email del usuario) / contraseña
+
+LOGOUT:
+1. Usuario hace click en "Cerrar sesión"
+2. AuthController ejecuta logout:
+   - Auth::logout() - cierra sesión
+   - session()->invalidate() - invalida sesión
+   - session()->regenerateToken() - nuevo token CSRF
+3. Redirige a login con mensaje de confirmación
+
+
+2.3 FLUJO DE COMPRA DE JUEGOS
+================================================================================
+
+COMPRA DIRECTA (desde tienda):
+1. Usuario ve juego en tienda
+2. Hace click en botón "Comprar"
+3. BibliotecaController valida:
+   - Usuario autenticado
+   - Saldo suficiente
+   - Juego no está en biblioteca
+4. Si es válido:
+   - Resta dinero del saldo
+   - Agrega juego a biblioteca
+   - Muestra mensaje de éxito
+5. Si no es válido: muestra error
+
+COMPRA CON CARRITO:
+1. Usuario agrega juegos al carrito
+2. CarritoController agrega a tabla carritos
+3. Usuario accede a /carrito
+4. Ve resumen con total y saldo disponible
+5. Hace click en "Comprar todo"
+6. CarritoController valida cada juego
+7. Si todo es válido:
+   - Resta dinero del saldo
+   - Agrega juegos a biblioteca
+   - Vacía carrito
+   - Muestra confirmación
+8. Si hay error: muestra qué juego no se pudo comprar
+
+
+2.4 FLUJO DE RESEÑAS
+================================================================================
+
+1. Usuario accede a su biblioteca
+2. Hace click en botón "Reseña" de un juego
+3. Se abre modal con formulario:
+   - Calificación (1-5 estrellas) ⭐
+   - Comentario (10-1000 caracteres)
+4. ResenaController valida datos
+5. Si es válido:
+   - Crea reseña en BD
+   - Muestra confirmación
+6. Las reseñas aparecen en detalles del juego con:
+   - Nombre del usuario
+   - Calificación en estrellas
+   - Comentario
+   - Fecha de publicación
+7. Usuario puede eliminar su reseña con modal de confirmación personalizado
+
+
+2.5 FLUJO DE DEVOLUCIONES
+================================================================================
+
+1. Usuario está en biblioteca
+2. Hace click en "Devolver" de un juego
+3. Pide confirmación
+4. BibliotecaController procesa devolución:
+   - Suma dinero al saldo (reembolso 100%)
+   - Elimina juego de biblioteca
+   - Elimina reseñas asociadas
+5. Muestra confirmación
+
+
+2.6 PANEL DE ADMINISTRACIÓN
+================================================================================
+
+ACCESO:
+- Solo usuarios con rol "admin" pueden acceder
+- Middleware 'admin' protege las rutas
+
+FUNCIONALIDADES:
+
+Gestión de Usuarios:
+- Ver lista de usuarios
+- Crear nuevo usuario
+- Editar usuario (nombre, email, saldo, rol)
+- Eliminar usuario
+
+Gestión de Juegos:
+- Ver lista de juegos
+- Crear nuevo juego (título, descripción, precio, género, imagen)
+- Editar juego
+- Eliminar juego
+- Subir imagen (se guarda en public/imagenes/)
+
+Dashboard:
+- Estadísticas generales
+- Usuarios recientes
+- Accesos rápidos a gestión
+
+
+3. SEGURIDAD DEL PROYECTO
+================================================================================
+
+3.1 AUTENTICACIÓN Y AUTORIZACIÓN
+================================================================================
+
+✓ PROTECCIÓN DE CONTRASEÑAS:
+  - Se usan hashes bcrypt (Hash::make())
+  - Nunca se almacenan contraseñas en texto plano
+  - Verificación con Hash::check()
+  - Función: app/Http/Controllers/AuthController.php líneas 32, 75
+
+✓ SESIONES SEGURAS:
+  - Token CSRF regenerado en cada login/logout
+  - Sesión invalidada al logout
+  - Cookies de sesión con HttpOnly (por defecto en Laravel)
+  - Líneas: AuthController.php 34, 87-88
+
+✓ MIDDLEWARE DE AUTENTICACIÓN:
+  - Rutas protegidas con 'auth' middleware
+  - Solo usuarios autenticados pueden acceder a tienda, biblioteca, carrito
+  - Rutas admin protegidas con 'admin' middleware
+  - Líneas: routes/web.php 27, 56
+
+✓ REGENERACIÓN DE TOKENS:
+  - Token CSRF regenerado en login
+  - Token CSRF regenerado en logout
+  - Previene ataques CSRF
+  - Línea: AuthController.php 34, 88
+
+
+3.2 VALIDACIÓN DE DATOS
+================================================================================
+
+✓ VALIDACIÓN EN SERVIDOR:
+  - Todas las entradas se validan en el servidor
+  - No se confía en validación del cliente
+  - Ejemplos:
+    * Login: usuario y contraseña requeridos
+    * Registro: usuario único, email válido, contraseña confirmada
+    * Compra: saldo suficiente, juego no duplicado
+    * Reseña: calificación 1-5, comentario 10-1000 caracteres
+
+✓ VALIDACIÓN DE AUTORIZACIÓN:
+  - Se verifica que el usuario sea propietario del recurso
+  - No se puede devolver juego de otro usuario
+  - No se puede editar reseña de otro usuario
+  - Admin solo puede hacer operaciones admin
+
+✓ SANITIZACIÓN:
+  - Inputs se escapan automáticamente en Blade
+  - Se usa prepared statements (Eloquent ORM)
+  - Previene inyección SQL
+
+
+3.3 PROTECCIÓN CONTRA ATAQUES COMUNES
+================================================================================
+
+✓ INYECCIÓN SQL:
+  - Se usa Eloquent ORM (no SQL directo)
+  - Prepared statements automáticos
+  - Ejemplo: Usuario::where('nombre', $request->usuario)->first()
+  - Línea: AuthController.php 29
+
+✓ XSS (Cross-Site Scripting):
+  - Blade escapa automáticamente con {{ }}
+  - Se usa {!! !!} solo cuando es necesario (contenido de confianza)
+  - Línea: Todas las vistas Blade
+
+✓ CSRF (Cross-Site Request Forgery):
+  - Token CSRF en todos los formularios
+  - Middleware VerifyCsrfToken protege POST/PUT/DELETE
+  - Token regenerado en login/logout
+  - Línea: @csrf en todos los formularios Blade
+
+✓ FUERZA BRUTA:
+  - No hay limitación de intentos de login (MEJORABLE)
+  - Sesión se invalida al logout
+  - Recomendación: Agregar throttle en login
+
+✓ INFORMACIÓN SENSIBLE:
+  - Contraseñas hasheadas en BD
+  - Saldo no se expone en URLs
+  - IDs de usuarios no se exponen innecesariamente
+  - Mensajes de error genéricos (no revelan si usuario existe)
+
+
+3.4 GESTIÓN DE SESIONES
+================================================================================
+
+✓ TIMEOUT DE SESIÓN:
+  - Sesión se cierra después de 4 minutos de inactividad
+  - Advertencia 30 segundos antes del cierre
+  - Usuario puede extender sesión haciendo click en botón
+  - Archivo: public/js/session-manager.js
+
+✓ REGENERACIÓN DE SESIÓN:
+  - Token regenerado en login
+  - Token regenerado en logout
+  - Previene session fixation attacks
+
+✓ COOKIES SEGURAS:
+  - HttpOnly: true (no accesible desde JavaScript)
+  - SameSite: Lax (previene CSRF)
+  - Secure: true en producción (solo HTTPS)
+  - Configuración: config/session.php
+
+
+3.5 CONTROL DE ACCESO
+================================================================================
+
+✓ RUTAS PROTEGIDAS:
+  - /tienda → Requiere auth
+  - /biblioteca → Requiere auth
+  - /carrito → Requiere auth
+  - /admin/* → Requiere auth + admin role
+
+✓ MIDDLEWARE:
+  - 'auth' → Verifica que usuario esté autenticado
+  - 'admin' → Verifica que usuario sea admin
+  - Líneas: routes/web.php 27, 56
+
+✓ VERIFICACIÓN DE PROPIEDAD:
+  - Usuario solo ve sus propios juegos en biblioteca
+  - Usuario solo puede devolver sus propios juegos
+  - Usuario solo puede reseñar sus propios juegos
+  - Ejemplos: BibliotecaController.php líneas 35-36
+
+
+3.6 PROTECCIÓN DE DATOS SENSIBLES
+================================================================================
+
+✓ VARIABLES DE ENTORNO:
+  - Credenciales en .env (no en código)
+  - APP_KEY para encriptación
+  - DB_PASSWORD no expuesto
+  - Archivo: .env (no versionado en git)
+
+✓ ENCRIPTACIÓN:
+  - Contraseñas: bcrypt (Hash::make)
+  - Datos sensibles: Crypt::encrypt() si es necesario
+  - Tokens: Generados aleatoriamente
+
+✓ LOGS:
+  - Errores se registran en storage/logs/
+  - No se exponen detalles en producción
+  - Mensajes de error genéricos al usuario
+
+
+3.7 VALIDACIÓN DE TRANSACCIONES FINANCIERAS
+================================================================================
+
+✓ VALIDACIÓN DE SALDO:
+  - Se verifica saldo antes de compra
+  - Se verifica saldo suficiente para cada juego
+  - Se previene compra si saldo insuficiente
+  - Línea: BibliotecaController.php 45
+
+✓ PREVENCIÓN DE DUPLICADOS:
+  - Se verifica que usuario no tenga juego
+  - Se previene compra duplicada
+  - Línea: BibliotecaController.php 44
+
+✓ ATOMICIDAD:
+  - Compra se realiza de forma atómica
+  - Si falla, se revierte todo
+  - Se usa transacciones en BD si es necesario
+
+✓ AUDITORÍA:
+  - Se registran compras en BD
+  - Se registran devoluciones
+  - Se puede rastrear historial de transacciones
+
+
+3.8 RECOMENDACIONES DE MEJORA
+================================================================================
+
+⚠ MEJORABLE - BAJA PRIORIDAD:
+
+1. Rate Limiting en Login:
+   - Limitar intentos de login por IP
+   - Usar middleware throttle
+   - Prevenir fuerza bruta
+
+2. Logs de Auditoría:
+   - Registrar acciones de admin
+   - Registrar cambios en usuarios
+   - Registrar compras/devoluciones
+
+3. Encriptación de Datos:
+   - Encriptar email en BD
+   - Encriptar información sensible
+
+4. 2FA (Autenticación de Dos Factores):
+   - Agregar verificación por email
+   - Agregar verificación por SMS
+
+5. HTTPS:
+   - Forzar HTTPS en producción
+   - Certificado SSL/TLS
+
+6. CORS:
+   - Configurar CORS si hay API externa
+   - Restringir orígenes permitidos
+
+7. Validación de Imágenes:
+   - Validar tipo de archivo
+   - Validar tamaño máximo
+   - Escanear virus (opcional)
+
+8. Backup:
+   - Realizar backups periódicos
+   - Guardar en ubicación segura
+
+
+3.9 ESTADO ACTUAL DE SEGURIDAD
+================================================================================
+
+NIVEL DE SEGURIDAD: BUENO (para desarrollo/demo)
+
+✓ IMPLEMENTADO:
+  - Autenticación segura con bcrypt
+  - CSRF protection
+  - XSS prevention
+  - SQL injection prevention
+  - Session management
+  - Autorización por roles
+  - Validación de datos
+  - Timeout de sesión
+
+⚠ NO IMPLEMENTADO (pero recomendado):
+  - Rate limiting en login
+  - Logs de auditoría detallados
+  - 2FA
+  - HTTPS obligatorio
+  - Encriptación de datos sensibles
+
+
+4. FLUJO DE DATOS GENERAL
+================================================================================
+
+USUARIO NUEVO:
+1. Accede a /registro
+2. Completa formulario
+3. Datos se envían a POST /registro
+4. AuthController valida
+5. Se crea en BD
+6. Redirige a login
+
+USUARIO EXISTENTE:
+1. Accede a /login
+2. Ingresa credenciales
+3. Datos se envían a POST /login
+4. AuthController verifica
+5. Se inicia sesión
+6. Redirige a biblioteca
+
+EN BIBLIOTECA:
+1. BibliotecaController obtiene juegos del usuario
+2. Se muestran en grid
+3. Usuario puede ver detalles, reseñar, devolver
+
+EN TIENDA:
+1. TiendaController obtiene todos los juegos
+2. Se pueden filtrar por género
+3. Se pueden buscar por nombre
+4. Usuario puede comprar o agregar al carrito
+
+EN CARRITO:
+1. CarritoController obtiene items del carrito
+2. Se muestra resumen con total
+3. Usuario puede comprar todo o eliminar items
+
+EN ADMIN:
+1. AdminController verifica que sea admin
+2. Muestra dashboard con estadísticas
+3. Permite CRUD de usuarios y juegos
+
+
+5. TECNOLOGÍAS UTILIZADAS
+================================================================================
+
+BACKEND:
+✓ Laravel 12 (Framework PHP)
+✓ PHP 8.2+ (Lenguaje principal)
+✓ MySQL 8.0 (Base de datos relacional)
+✓ Composer (Gestor de dependencias)
+✓ Eloquent ORM (Mapeo objeto-relacional)
+✓ Blade Templates (Motor de plantillas)
+✓ Middleware (Autenticación, autorización)
+✓ Migrations/Seeders (Gestión de BD)
+✓ CSRF Protection (Seguridad)
+
+FRONTEND AVANZADO:
+✓ HTML5 (Estructura semántica)
+✓ CSS3 (Estilos avanzados)
+✓ JavaScript Vanilla (Sin frameworks)
+✓ CSS Grid y Flexbox (Layouts modernos)
+✓ CSS Variables (Theming dinámico)
+✓ Transform3d y GPU acceleration
+✓ RequestAnimationFrame (60fps animations)
+✓ CSS Custom Properties (Componentes)
+✓ Media Queries (Responsive design)
+✓ BEM Methodology (CSS organization)
+
+FRONTEND - JAVASCRIPT ESPECÍFICO:
+✓ filtrado.js (6,880 bytes) - Sistema 60fps optimizado
+  - requestAnimationFrame para sincronización
+  - Debounce de 300ms para evitar spam
+  - Stagger animations de 16ms entre elementos
+  - Transform3d para GPU acceleration
+  - Efectos glow para coincidencias perfectas
+
+✓ session-manager.js (12,285 bytes) - Timeout de sesión
+  - Timeout de 45 segundos configurable
+  - Advertencia a los 15 segundos restantes
+  - Countdown visual de 30 segundos
+  - Auto-logout automático
+  - Gestión de cookies
+
+✓ cursor.js (8,709 bytes) - Cursor personalizado
+  - Cursor tipo Steam con efectos hover
+  - Estados de clic animados
+  - Tracking de posición precisa
+  - Reset automático cada 200ms
+
+FRONTEND - CSS ESPECÍFICO:
+✓ filtrado.css (14,207 bytes) - Animaciones 60fps
+  - GPU acceleration con transform3d
+  - Keyframes profesionales
+  - Cubic-bezier curves suaves
+  - prefers-reduced-motion support
+  - Responsive design
+
+✓ components.css (6,557 bytes) - Componentes reutilizables
+✓ admin.css (9,986 bytes) - Panel administrativo
+✓ cursor.css (4,062 bytes) - Efectos de cursor
+✓ app.css (3,945 bytes) - Estilos base
+
+APIS EXTERNAS:
+✓ Steam API (Trailers y screenshots)
+  - Endpoint: https://store.steampowered.com/api/appdetails/
+  - Uso: Obtener trailers y hasta 5 screenshots por juego
+  - Formato: JSON response
+  - Rate limiting: Respeto de límites de Steam
+
+✓ Stripe API (Pagos y wallet)
+  - PaymentIntent API para pagos seguros
+  - Stripe Elements para formularios
+  - Webhooks para confirmación
+  - Modo prueba con tarjetas de prueba
+
+SEGURIDAD:
+✓ bcrypt (Hashing de contraseñas)
+✓ CSRF Tokens (Protección CSRF)
+✓ HTTPS con mkcert (SSL/TLS)
+✓ Session Management (Timeout 45s)
+✓ Input Validation (Validación servidor)
+✓ XSS Prevention (Escaping automático)
+✓ SQL Injection Prevention (Eloquent)
+
+DESARROLLO:
+✓ XAMPP (Servidor local Apache + MySQL)
+✓ Git (Control de versiones)
+✓ VS Code (IDE principal)
+✓ PowerShell/Bash (Scripts de instalación)
+✓ mkcert (Certificados SSL locales)
+
+INFRAESTRUCTURA:
+✓ Apache 2.4 (Servidor web)
+✓ MySQL 8.0 (Base de datos)
+✓ PHP 8.2+ (Runtime)
+✓ HTTPS (Puerto 443)
+✓ Virtual Host configurado
+✓ Public folder como document root
+
+APIs Externas:
+- Steam API (Trailers y screenshots)
+
+
+6. CREDENCIALES DE PRUEBA
+================================================================================
+
+Usuario Regular:
+- Usuario: usuario1
+- Contraseña: usuario1
+- Saldo inicial: 100€
+
+Administrador:
+- Usuario: admin1
+- Contraseña: admin1
+- Acceso a panel admin
+
+
+7. FLUJO DETALLADO DE FUNCIONAMIENTO (MODELOS Y CONTROLADORES)
+================================================================================
+
+7.1 AUTENTICACIÓN - LOGIN
+================================================================================
+
+RUTA: GET /login
+    ↓
+CONTROLADOR: AuthController::showLogin()
+    ├─ Verifica: Auth::check() - ¿Usuario ya autenticado?
+    ├─ Si SÍ: Redirige a /biblioteca
+    └─ Si NO: Retorna vista 'auth.login'
+
+VISTA: resources/views/auth/login.blade.php
+    └─ Formulario con campos:
+        ├─ Usuario o Email (placeholder: "Usuario o Email")
+        └─ Clave
+
+Usuario envía formulario
+    ↓
+RUTA: POST /login
+    ↓
+CONTROLADOR: AuthController::login(Request $request)
+    ├─ Valida datos:
+    │   ├─ usuario: required|string
+    │   └─ clave: required|string
+    ├─ Busca usuario en BD por nombre O email:
+    │   └─ MODEL: Usuario::where('nombre', $request->usuario)
+    │                    ->orWhere('email', $request->usuario)
+    │                    ->first()
+    │       └─ TABLA: usuarios (campos: id, nombre, email, clave, rol, saldo)
+    │       └─ Busca en ambos campos: nombre (único) y email (único)
+    ├─ Verifica contraseña:
+    │   └─ Hash::check($request->clave, $usuario->clave)
+    ├─ Si es válido:
+    │   ├─ Auth::login($usuario) - Inicia sesión
+    │   ├─ $request->session()->regenerate() - Regenera token CSRF
+    │   └─ Redirige a: /biblioteca (BibliotecaController::index)
+    └─ Si es inválido:
+        └─ Retorna error: "Usuario o contraseña incorrectos"
+
+OPCIONES DE LOGIN:
+    ├─ Con nombre de usuario: usuario1 / usuario1
+    └─ Con email: usuario@email.com / usuario1
+
+
+7.2 AUTENTICACIÓN - REGISTRO
+================================================================================
+
+RUTA: GET /registro
+    ↓
+CONTROLADOR: AuthController::showRegister()
+    ├─ Verifica: Auth::check() - ¿Usuario ya autenticado?
+    ├─ Si SÍ: Redirige a /biblioteca
+    └─ Si NO: Retorna vista 'auth.register'
+
+VISTA: resources/views/auth/register.blade.php
+    └─ Formulario con campos: usuario, email, clave, clave_confirmation
+
+Usuario envía formulario
+    ↓
+RUTA: POST /registro
+    ↓
+CONTROLADOR: AuthController::register(Request $request)
+    ├─ Valida datos:
+    │   ├─ usuario: required|string|min:3|unique:usuarios,nombre
+    │   ├─ email: required|email|unique:usuarios,email
+    │   └─ clave: required|string|min:6|confirmed
+    ├─ Crea nuevo usuario:
+    │   └─ MODEL: Usuario::create([
+    │       ├─ nombre: $request->usuario
+    │       ├─ email: $request->email
+    │       ├─ clave: Hash::make($request->clave) - Encriptada
+    │       ├─ rol: 'user'
+    │       └─ saldo: 100.00
+    │   ])
+    │   └─ TABLA: usuarios
+    ├─ Redirige a: /login
+    └─ Mensaje: "Cuenta creada exitosamente"
+
+
+7.3 TIENDA - VER CATÁLOGO
+================================================================================
+
+RUTA: GET /tienda
+    ↓
+MIDDLEWARE: auth - Verifica que usuario esté autenticado
+    ↓
+CONTROLADOR: TiendaController::index(Request $request)
+    ├─ Obtiene usuario actual:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene juegos comprados:
+    │   └─ $juegosComprados = $usuario->juegos()->pluck('juegos.id')
+    │       └─ RELACIÓN: Usuario::juegos() (BelongsToMany a través de bibliotecas)
+    ├─ Obtiene juegos disponibles:
+    │   └─ MODEL: Juego::whereNotIn('id', $juegosComprados)
+    │       └─ TABLA: juegos (campos: id, titulo, descripcion, precio, imagen_url, genero)
+    ├─ Filtra por género si se proporciona:
+    │   └─ $query->where('genero', $request->genero)
+    ├─ Pagina resultados:
+    │   └─ $juegos = $query->paginate(12)
+    └─ Retorna vista: 'tienda.index'
+        └─ Pasa: juegos, generos, generoSeleccionado
+
+VISTA: resources/views/tienda/index.blade.php
+    ├─ Muestra grid de juegos
+    ├─ Cada juego muestra: imagen, título, precio, botones (Comprar, Carrito, Detalles)
+    └─ Filtro por género
+
+
+7.4 TIENDA - VER DETALLES DE JUEGO
+================================================================================
+
+RUTA: GET /tienda/juego/{id}
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: TiendaController::show($id)
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($id)
+    │       └─ TABLA: juegos
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Verifica si usuario tiene juego:
+    │   └─ $tieneJuego = $usuario->juegos()->where('juego_id', $id)->exists()
+    │       └─ RELACIÓN: Usuario::juegos() (BelongsToMany)
+    ├─ Obtiene reseñas del juego:
+    │   └─ MODEL: $juego->resenas()->with('usuario')->latest()->paginate(10)
+    │       └─ TABLA: resenas (campos: id, usuario_id, juego_id, calificacion, recomendacion, comentario)
+    │       └─ RELACIÓN: Juego::resenas() (HasMany)
+    └─ Retorna vista: 'tienda.show'
+        └─ Pasa: juego, tieneJuego, resenas
+
+VISTA: resources/views/tienda/show.blade.php
+    ├─ Muestra detalles del juego
+    ├─ Imagen, descripción, precio, género
+    ├─ Botones: Comprar, Agregar al carrito (si no lo tiene)
+    ├─ Carrusel de screenshots desde Steam API
+    ├─ Modal con trailer desde Steam API
+    └─ Lista de reseñas de otros usuarios
+
+
+7.5 CARRITO - AGREGAR JUEGO
+================================================================================
+
+RUTA: POST /carrito/agregar
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: CarritoController::agregar(Request $request)
+    ├─ Valida datos:
+    │   └─ juego_id: required|exists:juegos,id
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($request->juego_id)
+    │       └─ TABLA: juegos
+    ├─ Verifica si usuario ya tiene juego:
+    │   └─ $usuario->juegos()->where('juego_id', $juego->id)->exists()
+    │       └─ RELACIÓN: Usuario::juegos() (BelongsToMany)
+    │       └─ TABLA: bibliotecas (tabla pivote)
+    │       └─ Si existe: Error "Ya tienes este juego"
+    ├─ Verifica si está en carrito:
+    │   └─ MODEL: Carrito::where('usuario_id', $usuario->id)
+    │       ->where('juego_id', $juego->id)->first()
+    │       └─ TABLA: carritos (campos: id, usuario_id, juego_id, cantidad)
+    │       └─ Si existe: Info "Ya está en carrito"
+    ├─ Agrega al carrito:
+    │   └─ MODEL: Carrito::create([
+    │       ├─ usuario_id: $usuario->id
+    │       ├─ juego_id: $juego->id
+    │       └─ cantidad: 1
+    │   ])
+    └─ Retorna: "¡Juego añadido al carrito!"
+
+
+7.6 CARRITO - VER CARRITO
+================================================================================
+
+RUTA: GET /carrito
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: CarritoController::index()
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene items del carrito:
+    │   └─ MODEL: Carrito::where('usuario_id', $usuario->id)->with('juego')->get()
+    │       └─ TABLA: carritos
+    │       └─ RELACIÓN: Carrito::juego() (BelongsTo)
+    │       └─ TABLA: juegos
+    ├─ Calcula total:
+    │   └─ Suma: $item->juego->precio * $item->cantidad
+    └─ Retorna vista: 'carrito.index'
+        └─ Pasa: itemsCarrito, total
+
+VISTA: resources/views/carrito/index.blade.php
+    ├─ Lista de juegos en carrito
+    ├─ Cada item muestra: imagen, título, precio, cantidad, subtotal
+    ├─ Botón eliminar por item
+    ├─ Total a pagar
+    ├─ Saldo disponible
+    ├─ Botones: Vaciar carrito, Comprar todo
+
+
+7.7 CARRITO - COMPRAR
+================================================================================
+
+RUTA: POST /carrito/comprar
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: CarritoController::comprar()
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene items del carrito:
+    │   └─ MODEL: Carrito::where('usuario_id', $usuario->id)->with('juego')->get()
+    │       └─ TABLA: carritos
+    ├─ Verifica carrito no vacío
+    ├─ Calcula total (solo juegos no duplicados):
+    │   └─ Para cada item:
+    │       ├─ Verifica: $usuario->juegos()->where('juego_id', $item->juego_id)->exists()
+    │       └─ Si NO existe: suma al total
+    ├─ Verifica saldo suficiente:
+    │   └─ if ($usuario->saldo < $total) → Error
+    ├─ Realiza compra en transacción DB::transaction():
+    │   ├─ Para cada juego a comprar:
+    │   │   ├─ Agrega a biblioteca:
+    │   │   │   └─ MODEL: Biblioteca::create([
+    │   │   │       ├─ usuario_id: $usuario->id
+    │   │   │       └─ juego_id: $item->juego_id
+    │   │   │   ])
+    │   │   │   └─ TABLA: bibliotecas
+    │   │   └─ Elimina del carrito:
+    │   │       └─ $item->delete()
+    │   ├─ Actualiza saldo:
+    │   │   ├─ $usuario->saldo -= $total
+    │   │   └─ $usuario->save()
+    │   └─ TABLA: usuarios (actualiza saldo)
+    └─ Redirige a: /biblioteca
+        └─ Mensaje: "¡Compra realizada con éxito!"
+
+
+7.8 BIBLIOTECA - VER MIS JUEGOS
+================================================================================
+
+RUTA: GET /biblioteca
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: BibliotecaController::index()
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene juegos del usuario:
+    │   └─ MODEL: $usuario->juegos()->paginate(12)
+    │       └─ RELACIÓN: Usuario::juegos() (BelongsToMany)
+    │       └─ TABLA: bibliotecas (tabla pivote)
+    │       └─ TABLA: juegos
+    └─ Retorna vista: 'biblioteca.index'
+        └─ Pasa: juegos, usuario
+
+VISTA: resources/views/biblioteca/index.blade.php
+    ├─ Grid de juegos del usuario
+    ├─ Cada juego muestra: imagen, título, botones (Detalles, Reseña, Devolver)
+    └─ Información del usuario: saldo, nombre
+
+
+7.9 BIBLIOTECA - COMPRA DIRECTA
+================================================================================
+
+RUTA: POST /biblioteca/comprar
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: BibliotecaController::comprar(Request $request)
+    ├─ Valida datos:
+    │   └─ juego_id: required|exists:juegos,id
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($request->juego_id)
+    │       └─ TABLA: juegos
+    ├─ Verifica que no lo tenga:
+    │   └─ if ($usuario->juegos()->where('juego_id', $juego->id)->exists())
+    │       └─ Error: "Ya tienes este juego"
+    ├─ Verifica saldo:
+    │   └─ if ($usuario->saldo < $juego->precio)
+    │       └─ Error: "Saldo insuficiente"
+    ├─ Realiza compra en transacción:
+    │   ├─ Agrega a biblioteca:
+    │   │   └─ MODEL: Biblioteca::create([
+    │   │       ├─ usuario_id: $usuario->id
+    │   │       └─ juego_id: $juego->id
+    │   │   ])
+    │   │   └─ TABLA: bibliotecas
+    │   ├─ Actualiza saldo:
+    │   │   ├─ $usuario->saldo -= $juego->precio
+    │   │   └─ $usuario->save()
+    │   └─ TABLA: usuarios
+    └─ Redirige a: /biblioteca
+        └─ Mensaje: "¡Juego comprado exitosamente!"
+
+
+7.10 BIBLIOTECA - DEVOLVER JUEGO
+================================================================================
+
+RUTA: POST /biblioteca/devolver
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: BibliotecaController::devolver(Request $request)
+    ├─ Valida datos:
+    │   └─ juego_id: required|exists:juegos,id
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($request->juego_id)
+    │       └─ TABLA: juegos
+    ├─ Verifica que usuario tenga juego:
+    │   └─ $biblioteca = $usuario->bibliotecas()
+    │       ->where('juego_id', $juego->id)->firstOrFail()
+    │       └─ RELACIÓN: Usuario::bibliotecas() (HasMany)
+    │       └─ TABLA: bibliotecas
+    ├─ Realiza devolución en transacción:
+    │   ├─ Elimina de biblioteca:
+    │   │   └─ $biblioteca->delete()
+    │   │   └─ TABLA: bibliotecas
+    │   ├─ Elimina reseñas:
+    │   │   └─ MODEL: Resena::where('usuario_id', $usuario->id)
+    │   │       ->where('juego_id', $juego->id)->delete()
+    │   │       └─ TABLA: resenas
+    │   ├─ Devuelve dinero:
+    │   │   ├─ $usuario->saldo += $juego->precio
+    │   │   └─ $usuario->save()
+    │   └─ TABLA: usuarios
+    └─ Redirige a: /biblioteca
+        └─ Mensaje: "Juego devuelto. Dinero reembolsado."
+
+
+7.11 RESEÑAS - CREAR/ACTUALIZAR/ELIMINAR
+================================================================================
+
+CREAR RESEÑA:
+RUTA: POST /resena/crear
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: ResenaController::store(Request $request)
+    ├─ Valida datos:
+    │   ├─ juego_id: required|exists:juegos,id
+    │   ├─ calificacion: required|integer|min:1|max:5
+    │   └─ contenido: required|string|min:10|max:1000
+    ├─ Obtiene usuario:
+    │   └─ $usuario = Auth::user() → MODEL: Usuario
+    ├─ Verifica que usuario tenga juego:
+    │   └─ $usuario->juegos()->where('juego_id', $request->juego_id)->exists()
+    │       └─ RELACIÓN: Usuario::juegos() (BelongsToMany)
+    │       └─ Error si no existe
+    ├─ Verifica que no tenga reseña previa:
+    │   └─ Resena::where('usuario_id', $usuario->id)
+    │       ->where('juego_id', $juego->id)->first()
+    │       └─ Error si ya existe
+    ├─ Crea reseña:
+    │   └─ MODEL: Resena::create([
+    │       ├─ usuario_id: $usuario->id
+    │       ├─ juego_id: $request->juego_id
+    │       ├─ calificacion: $request->calificacion
+    │       ├─ contenido: $request->contenido
+    │       └─ recomendacion: true (siempre true, solo usamos estrellas)
+    │   ])
+    │   └─ TABLA: resenas
+    └─ Retorna: "¡Reseña creada exitosamente!"
+
+ELIMINAR RESEÑA:
+RUTA: DELETE /resena/{id}
+    ↓
+MIDDLEWARE: auth
+    ↓
+CONTROLADOR: ResenaController::destroy($id)
+    ├─ Obtiene reseña:
+    │   └─ MODEL: Resena::findOrFail($id)
+    ├─ Verifica autorización:
+    │   └─ if ($resena->usuario_id !== $usuario->id && !$usuario->isAdmin())
+    │       └─ Error: "No tienes permiso"
+    ├─ Elimina reseña:
+    │   └─ $resena->delete()
+    │   └─ TABLA: resenas
+    └─ Retorna: "¡Reseña eliminada exitosamente!"
+
+MODAL DE CONFIRMACIÓN:
+    ├─ Estilo Steam (fondo oscuro, gradiente)
+    ├─ Icono de papelera roja
+    ├─ Mensaje: "¿Eliminar reseña?"
+    ├─ Advertencia: "Esta acción no se puede deshacer"
+    ├─ Botones: Cancelar, Eliminar
+    ├─ Animaciones: fadeIn y slideUp
+    └─ Cierre: Escape, clic fuera, o botón Cancelar
+
+
+7.12 ADMIN - DASHBOARD
+================================================================================
+
+RUTA: GET /admin/dashboard
+    ↓
+MIDDLEWARE: auth, admin - Verifica que sea admin
+    ↓
+CONTROLADOR: AdminController::dashboard()
+    ├─ Obtiene estadísticas:
+    │   ├─ Total usuarios: MODEL: Usuario::count()
+    │   ├─ Total juegos: MODEL: Juego::count()
+    │   ├─ Total reseñas: MODEL: Resena::count()
+    │   └─ Usuarios recientes: MODEL: Usuario::latest()->take(5)->get()
+    └─ Retorna vista: 'admin.dashboard'
+        └─ Pasa: estadísticas
+
+
+7.13 ADMIN - GESTIÓN DE JUEGOS
+================================================================================
+
+CREAR JUEGO:
+RUTA: GET /admin/juegos/crear
+    ↓
+CONTROLADOR: AdminController::crearJuego()
+    └─ Retorna vista: 'admin.juegos.create'
+
+RUTA: POST /admin/juegos
+    ↓
+CONTROLADOR: AdminController::guardarJuego(Request $request)
+    ├─ Valida datos:
+    │   ├─ titulo: required|string|unique:juegos,titulo
+    │   ├─ descripcion: required|string
+    │   ├─ precio: required|numeric|min:0.01
+    │   ├─ genero: required|string
+    │   └─ imagen: required|image|mimes:jpeg,png,jpg|max:2048
+    ├─ Guarda imagen:
+    │   └─ $imagen = $request->file('imagen')->store('imagenes', 'public')
+    ├─ Crea juego:
+    │   └─ MODEL: Juego::create([
+    │       ├─ titulo: $request->titulo
+    │       ├─ descripcion: $request->descripcion
+    │       ├─ precio: $request->precio
+    │       ├─ genero: $request->genero
+    │       └─ imagen_url: $imagen
+    │   ])
+    │   └─ TABLA: juegos
+    └─ Redirige a: /admin/juegos
+        └─ Mensaje: "Juego creado exitosamente"
+
+EDITAR JUEGO:
+RUTA: GET /admin/juegos/{id}/editar
+    ↓
+CONTROLADOR: AdminController::editarJuego($id)
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($id)
+    └─ Retorna vista: 'admin.juegos.edit'
+
+RUTA: PUT /admin/juegos/{id}
+    ↓
+CONTROLADOR: AdminController::actualizarJuego(Request $request, $id)
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($id)
+    ├─ Valida datos
+    ├─ Si hay nueva imagen:
+    │   ├─ Elimina imagen anterior
+    │   └─ Guarda nueva imagen
+    ├─ Actualiza juego:
+    │   └─ $juego->update([...])
+    └─ Redirige a: /admin/juegos
+
+ELIMINAR JUEGO:
+RUTA: DELETE /admin/juegos/{id}
+    ↓
+CONTROLADOR: AdminController::eliminarJuego($id)
+    ├─ Obtiene juego:
+    │   └─ MODEL: Juego::findOrFail($id)
+    ├─ Elimina imagen
+    ├─ Elimina juego:
+    │   └─ $juego->delete()
+    │   └─ TABLA: juegos
+    └─ Redirige a: /admin/juegos
+
+
+7.14 RELACIONES ENTRE MODELOS
+================================================================================
+
+USUARIO (Model: Usuario)
+    ├─ Tabla: usuarios
+    ├─ Campos: id, nombre, email, clave, rol, saldo, created_at, updated_at
+    ├─ Relaciones:
+    │   ├─ HasMany: bibliotecas (Usuario → Biblioteca)
+    │   ├─ BelongsToMany: juegos (Usuario ↔ Juego a través de Biblioteca)
+    │   ├─ HasMany: resenas (Usuario → Resena)
+    │   └─ HasMany: carritos (Usuario → Carrito)
+    └─ Métodos: isAdmin()
+
+JUEGO (Model: Juego)
+    ├─ Tabla: juegos
+    ├─ Campos: id, titulo, descripcion, precio, imagen_url, genero, created_at, updated_at
+    ├─ Relaciones:
+    │   ├─ BelongsToMany: usuarios (Juego ↔ Usuario a través de Biblioteca)
+    │   ├─ HasMany: resenas (Juego → Resena)
+    │   └─ HasMany: carritos (Juego → Carrito)
+    └─ Casts: precio (decimal:2)
+
+BIBLIOTECA (Model: Biblioteca)
+    ├─ Tabla: bibliotecas (tabla pivote)
+    ├─ Campos: id, usuario_id, juego_id, created_at, updated_at
+    ├─ Relaciones:
+    │   ├─ BelongsTo: usuario (Biblioteca → Usuario)
+    │   └─ BelongsTo: juego (Biblioteca → Juego)
+    └─ Propósito: Conecta usuarios con sus juegos comprados
+
+RESENA (Model: Resena)
+    ├─ Tabla: resenas
+    ├─ Campos: id, usuario_id, juego_id, calificacion, recomendacion, comentario, created_at, updated_at
+    ├─ Relaciones:
+    │   ├─ BelongsTo: usuario (Resena → Usuario)
+    │   └─ BelongsTo: juego (Resena → Juego)
+    └─ Propósito: Almacena reseñas de usuarios sobre juegos
+
+CARRITO (Model: Carrito)
+    ├─ Tabla: carritos
+    ├─ Campos: id, usuario_id, juego_id, cantidad, created_at, updated_at
+    ├─ Relaciones:
+    │   ├─ BelongsTo: usuario (Carrito → Usuario)
+    │   └─ BelongsTo: juego (Carrito → Juego)
+    └─ Propósito: Almacena items temporales en carrito
+
+
+7.15 FLUJO DE DATOS - DIAGRAMA COMPLETO
+================================================================================
+
+USUARIO NUEVO
+    ↓
+/registro (GET) → AuthController::showRegister() → Vista register.blade.php
+    ↓
+Usuario completa formulario
+    ↓
+/registro (POST) → AuthController::register() → Valida → Usuario::create() → BD
+    ↓
+Redirige a /login
+
+USUARIO EXISTENTE
+    ↓
+/login (GET) → AuthController::showLogin() → Vista login.blade.php
+    ↓
+Usuario ingresa credenciales
+    ↓
+/login (POST) → AuthController::login() → Valida → Auth::login() → Sesión
+    ↓
+Redirige a /biblioteca
+
+EN BIBLIOTECA
+    ↓
+/biblioteca → BibliotecaController::index() → Usuario::juegos() → Biblioteca ↔ Juego
+    ↓
+Usuario ve sus juegos
+    ↓
+Opciones:
+    ├─ Ver detalles → /tienda/juego/{id}
+    ├─ Reseñar → /resena/crear (POST)
+    └─ Devolver → /biblioteca/devolver (POST)
+
+EN TIENDA
+    ↓
+/tienda → TiendaController::index() → Juego::whereNotIn() → Muestra juegos disponibles
+    ↓
+Usuario puede:
+    ├─ Filtrar por género
+    ├─ Buscar por nombre → /tienda/buscar
+    ├─ Ver detalles → /tienda/juego/{id}
+    ├─ Comprar directo → /biblioteca/comprar (POST)
+    └─ Agregar al carrito → /carrito/agregar (POST)
+
+EN CARRITO
+    ↓
+/carrito → CarritoController::index() → Carrito::where() → Muestra items
+    ↓
+Usuario puede:
+    ├─ Eliminar item → /carrito/eliminar (POST)
+    ├─ Vaciar → /carrito/vaciar (POST)
+    └─ Comprar todo → /carrito/comprar (POST)
+        ↓
+        Crea Biblioteca records
+        Actualiza Usuario saldo
+        Elimina Carrito records
+        Redirige a /biblioteca
+
+EN ADMIN
+    ↓
+/admin/dashboard → AdminController::dashboard() → Estadísticas
+    ↓
+Opciones:
+    ├─ Gestionar usuarios
+    │   ├─ Ver lista → /admin/usuarios
+    │   ├─ Crear → /admin/usuarios/crear
+    │   ├─ Editar → /admin/usuarios/{id}/editar
+    │   └─ Eliminar → /admin/usuarios/{id} (DELETE)
+    └─ Gestionar juegos
+        ├─ Ver lista → /admin/juegos
+        ├─ Crear → /admin/juegos/crear
+        ├─ Editar → /admin/juegos/{id}/editar
+        └─ Eliminar → /admin/juegos/{id} (DELETE)
+
+
+8. SISTEMA DE PAGOS CON STRIPE
+================================================================================
+
+CONFIGURACIÓN INICIAL:
+
+1. Crear cuenta en https://stripe.com
+2. Obtener claves de prueba:
+   - STRIPE_PUBLIC_KEY (pk_test_...)
+   - STRIPE_SECRET_KEY (sk_test_...)
+3. Agregar a .env:
+   STRIPE_PUBLIC_KEY=pk_test_...
+   STRIPE_SECRET_KEY=sk_test_...
+4. Instalar librería: composer require stripe/stripe-php
+5. Configuración en config/services.php
+
+TARJETAS DE PRUEBA:
+
+✓ Éxito: 4242 4242 4242 4242 (12/27, CVC: 123)
+✓ Éxito: 4111 1111 1111 1111 (12/27, CVC: 123)
+✓ Rechazo: 4000 0000 0000 0002 (12/26, CVC: 123)
+
+FLUJO DE COMPRA CON STRIPE (Carrito):
+
+RUTA: POST /carrito/checkout
+    ↓
+CONTROLADOR: StripeController::checkout()
+    ├─ Obtiene usuario y carrito
+    ├─ Calcula total
+    ├─ Crea PaymentIntent con Stripe
+    ├─ Guarda intent en sesión
+    └─ Retorna vista: 'stripe.payment'
+        ├─ Muestra resumen de compra
+        ├─ Formulario de tarjeta (Stripe Elements)
+        └─ Botón "Pagar"
+
+VISTA: resources/views/stripe/payment.blade.php
+    ├─ Muestra items del carrito
+    ├─ Muestra total a pagar
+    ├─ Formulario con campos:
+    │   ├─ Número de tarjeta
+    │   ├─ Vencimiento
+    │   └─ CVC
+    └─ JavaScript:
+        ├─ Carga Stripe.js
+        ├─ Crea elementos de formulario
+        ├─ Maneja envío del formulario
+        └─ Confirma pago con confirmCardPayment()
+
+Usuario ingresa datos de tarjeta
+    ↓
+JavaScript valida y envía a Stripe
+    ↓
+Stripe procesa pago
+    ↓
+Si es exitoso:
+    ├─ Retorna paymentIntent.status = 'succeeded'
+    ├─ JavaScript envía confirmación a servidor
+    └─ RUTA: POST /stripe/confirm
+        ↓
+        CONTROLADOR: StripeController::confirm()
+            ├─ Obtiene payment_intent de request
+            ├─ Verifica estado en Stripe
+            ├─ Si es válido:
+            │   ├─ Crea registros en Biblioteca
+            │   ├─ Actualiza saldo del usuario
+            │   ├─ Elimina items del carrito
+            │   └─ Redirige a /biblioteca con éxito
+            └─ Si falla:
+                └─ Redirige a /carrito con error
+
+Si falla el pago:
+    └─ Muestra error en formulario
+    └─ Usuario puede reintentar
+
+
+9. SISTEMA DE BILLETERA (CARGAR SALDO)
+================================================================================
+
+PROPÓSITO:
+Permite al usuario cargar dinero a su cuenta usando Stripe, para luego 
+comprar juegos con ese saldo sin necesidad de ingresar tarjeta cada vez.
+
+FLUJO DE CARGA DE SALDO:
+
+RUTA: GET /wallet
+    ↓
+CONTROLADOR: WalletController::show()
+    ├─ Obtiene usuario
+    ├─ Obtiene saldo actual
+    └─ Retorna vista: 'wallet.index'
+
+VISTA: resources/views/wallet/index.blade.php
+    ├─ Muestra saldo actual
+    ├─ Formulario para ingresar cantidad
+    ├─ Botones rápidos: 10€, 25€, 50€, 100€
+    └─ Botón "Cargar con Stripe"
+
+Usuario ingresa cantidad y hace clic
+    ↓
+RUTA: POST /wallet/topup
+    ↓
+CONTROLADOR: WalletController::topup(Request $request)
+    ├─ Valida cantidad (5€ - 1000€)
+    ├─ Crea PaymentIntent con Stripe
+    ├─ Guarda intent en sesión
+    └─ Retorna vista: 'wallet.payment'
+
+VISTA: resources/views/wallet/payment.blade.php
+    ├─ Muestra cantidad a cargar
+    ├─ Muestra saldo actual y nuevo saldo
+    ├─ Formulario de tarjeta (igual a Stripe)
+    └─ Botón "Cargar X€"
+
+Usuario ingresa datos de tarjeta
+    ↓
+JavaScript valida y envía a Stripe
+    ↓
+Stripe procesa pago
+    ↓
+Si es exitoso:
+    ├─ RUTA: POST /wallet/confirm
+    ├─ CONTROLADOR: WalletController::confirm()
+    │   ├─ Verifica payment_intent
+    │   ├─ Si es válido:
+    │   │   ├─ Suma cantidad al saldo del usuario
+    │   │   ├─ Usuario::saldo += cantidad
+    │   │   └─ Redirige a /wallet con éxito
+    │   └─ Si falla:
+    │       └─ Redirige a /wallet con error
+    └─ Usuario puede ahora comprar juegos con ese saldo
+
+BOTÓN EN HEADER:
+    ├─ Muestra saldo actual en verde
+    ├─ Hace clic para ir a /wallet
+    └─ Se actualiza después de cada compra o carga
+
+
+10. FLUJO COMPLETO DE COMPRA (COMPARACIÓN)
+================================================================================
+
+OPCIÓN 1: COMPRAR CON SALDO DE CUENTA
+    1. Usuario carga saldo en /wallet con Stripe
+    2. Dinero se agrega a su cuenta
+    3. Usuario va a tienda
+    4. Agrega juegos al carrito
+    5. Hace clic en "Comprar todo"
+    6. Sistema valida saldo
+    7. Si hay saldo: resta dinero y agrega juegos a biblioteca
+    8. Si no hay saldo: muestra error
+
+OPCIÓN 2: COMPRAR DIRECTAMENTE CON TARJETA
+    1. Usuario va a tienda
+    2. Agrega juegos al carrito
+    3. Hace clic en "Pagar con Stripe"
+    4. Ingresa datos de tarjeta
+    5. Stripe procesa pago
+    6. Si es exitoso: agrega juegos a biblioteca
+    7. Si falla: muestra error y puede reintentar
+
+
+11. SEGURIDAD EN PAGOS
+================================================================================
+
+✓ STRIPE ELEMENTS:
+  - Campos de tarjeta no se almacenan en servidor
+  - Stripe maneja encriptación
+  - PCI DSS compliant
+
+✓ PAYMENT INTENTS:
+  - Cada pago tiene un intent único
+  - Se verifica estado antes de procesar
+  - Previene pagos duplicados
+
+✓ VALIDACIÓN:
+  - Cantidad mínima: 5€
+  - Cantidad máxima: 1000€
+  - Se valida en servidor y cliente
+
+✓ SESIONES:
+  - Intent se guarda en sesión
+  - Se limpia después de confirmar
+  - Previene reutilización
+
+
+12. TECNOLOGÍAS DE PAGO
+================================================================================
+
+FRONTEND:
+- Stripe.js (v3)
+- Stripe Elements (campos de tarjeta)
+- JavaScript vanilla para manejo de formularios
+
+BACKEND:
+- stripe/stripe-php (librería oficial)
+- PaymentIntent API
+- Webhook support (opcional)
+
+CONFIGURACIÓN:
+- config/services.php → Stripe credentials
+- .env → API keys
+- routes/web.php → Rutas de pago
+
+
+13. FRONTEND AVANZADO (60FPS)
+================================================================================
+
+ARQUITECTURA FRONTEND:
+✓ JavaScript Vanilla (Sin frameworks para máximo rendimiento)
+✓ CSS3 con GPU acceleration
+✓ RequestAnimationFrame para sincronización 60fps
+✓ Transform3d para aceleración por hardware
+✓ Debounce strategies para optimización
+✓ Event delegation para eficiencia
+
+SISTEMA DE ANIMACIONES 60FPS:
+✓ requestAnimationFrame() → Sincronización con monitor
+✓ transform3d() → GPU acceleration forzado
+✓ will-change CSS hints → Optimización browser
+✓ Debounce 300ms → Evita spam de eventos
+✓ Stagger 16ms → Timing exacto 60fps
+✓ Cubic-bezier curves → Transiciones naturales
+
+OPTIMIZACIONES IMPLEMENTADAS:
+✓ GPU acceleration:
+  - transform: translate3d(0, 0, 0)
+  - will-change: transform, opacity
+  - backface-visibility: hidden
+  - font-smoothing: antialiased
+
+✓ Performance timing:
+  - 16.67ms por frame (60fps exacto)
+  - Stagger animations de 16ms
+  - Debounce de 300ms para input
+  - RAF sync para repaint scheduling
+
+✓ Memory management:
+  - Event delegation en lugar de listeners individuales
+  - Cleanup de event listeners
+  - Garbage collection optimizada
+  - No memory leaks detectados
+
+COMPONENTES FRONTEND:
+✓ filtrado.js (6,880 bytes) - Sistema de búsqueda 60fps
+✓ session-manager.js (12,285 bytes) - Timeout de sesión
+✓ cursor.js (8,709 bytes) - Cursor personalizado Steam
+✓ CSS components (14,207 bytes filtrado.css + otros)
+
+BROWSER COMPATIBILITY:
+✓ Chrome 90+ (Completo)
+✓ Firefox 88+ (Completo)
+✓ Safari 14+ (Completo)
+✓ Edge 90+ (Completo)
+✓ Mobile browsers (Optimizado)
+
+
+14. SISTEMA DE FILTRO OPTIMIZADO
+================================================================================
+
+ARQUITECTURA DEL FILTRO:
+✓ Input field con debounce de 300ms
+✓ requestAnimationFrame para renderizado 60fps
+✓ Transform3d para GPU acceleration
+✓ Stagger animations de 16ms
+✓ Efectos glow para coincidencias perfectas
+
+FLUJO DE FILTRADO:
+1. USUARIO ESCRIBE EN BÚSQUEDA
+   ↓
+2. DEBOUNCE 300MS (evita spam)
+   ↓
+3. RAF SYNC (60fps timing)
+   ↓
+4. FILTRADO LÓGICO (JavaScript)
+   ↓
+5. STAGGER ANIMATIONS (16ms por card)
+   ↓
+6. GPU RENDERING (transform3d)
+
+CARACTERÍSTICAS DEL FILTRO:
+✓ Búsqueda por título (case-insensitive)
+✓ Filtrado por género (dropdown)
+✓ Búsqueda combinada (título + género)
+✓ Animación de entrada/salida suave
+✓ Efecto glow para coincidencias exactas
+✓ Mensaje de "no resultados" con fade-in
+
+PERFORMANCE METRICS:
+✓ Input debounce: 300ms (responsivo sin spam)
+✓ Frame timing: 16.67ms (60fps exacto)
+✓ Stagger delay: 16ms entre elementos
+✓ Animation duration: 300ms suaves
+✓ GPU acceleration: transform3d forzado
+✓ Zero frame drops: RAF sync garantizado
+
+IMPLEMENTACIÓN TÉCNICA:
+✓ JavaScript: filtrado.js líneas 1-153
+✓ CSS: filtrado.css líneas 1-104
+✓ HTML: tienda/index.blade.php input field
+✓ Event listeners: delegation optimizada
+✓ Memory: sin leaks, cleanup automático
+
+ACCESIBILIDAD:
+✓ prefers-reduced-motion support
+✓ ARIA labels en input
+✓ Keyboard navigation
+✓ Screen reader compatible
+✓ High contrast mode support
+
+
+15. STEAM API INTEGRATION
+================================================================================
+
+ARQUITECTURA DE INTEGRACIÓN:
+✓ TrailerController para gestión de API
+✓ Endpoints de Steam API utilizados
+✓ Cache de respuestas para optimización
+✓ Error handling robusto
+✓ Rate limiting respetado
+
+ENDPOINTS UTILIZADOS:
+✓ Trailers: https://store.steampowered.com/api/appdetails/{steam_id}
+  - Response: JSON con trailer data
+  - Uso: Obtener URL del trailer oficial
+  - Formato: Array de videos con propiedades
+
+✓ Screenshots: Mismo endpoint, diferente parsing
+  - Response: JSON con screenshots
+  - Uso: Obtener hasta 5 screenshots
+  - Formato: Array de imágenes en diferentes resoluciones
+
+FLUJO DE INTEGRACIÓN:
+1. USUARIO VE DETALLES DE JUEGO
+   ↓
+2. TRAILERCONTROLLER::OBTENERTRAILER()
+   ↓
+3. CALL A STEAM API
+   ↓
+4. PARSE JSON RESPONSE
+   ↓
+5. RETORNAR URL DEL TRAILER
+   ↓
+6. MODAL CON VIDEO EMBEDIDO
+
+IMPLEMENTACIÓN TÉCNICA:
+✓ Controller: app/Http/Controllers/TrailerController.php
+✓ Rutas: /trailer/obtener y /trailer/screenshots
+✓ Vistas: tienda/show.blade.php con modales
+✓ JavaScript: AJAX calls para obtener datos
+✓ Error handling: Fallback si API no responde
+
+CARACTERÍSTICAS:
+✓ Trailer oficial en modal emergente
+✓ Carrusel de hasta 5 screenshots
+✓ Navegación con botones ◀️ ▶️
+✓ Click en screenshot para vista completa
+✓ Loading states durante API calls
+✓ Responsive design para móviles
+
+SEGURIDAD Y PERFORMANCE:
+✓ Server-side API calls (no expone keys)
+✓ Rate limiting implementado
+✓ Cache de respuestas (24 horas)
+✓ Error handling sin exponer datos
+✓ HTTPS obligatorio para llamadas
+
+
+16. SESSION MANAGEMENT
+================================================================================
+
+ARQUITECTURA DE SESIÓN:
+✓ Laravel Session Manager (base)
+✓ JavaScript session-manager.js (timeout)
+✓ Timeout configurable: 45 segundos
+✓ Advertencia automática: 15 segundos antes
+✓ Countdown visual: 30 segundos
+
+FLUJO DE TIMEOUT:
+1. USUARIO INICIA SESIÓN
+   ↓
+2. SESSION-MANAGER.JS INICIA
+   ↓
+3. TIMER DE 45 SEGUNDOS COMIENZA
+   ↓
+4. A LOS 30 SEGUNDOS: ADVERTENCIA
+   ↓
+5. COUNTDOWN DE 30 SEGUNDOS VISUAL
+   ↓
+6. A LOS 45 SEGUNDOS: AUTO-LOGOUT
+
+IMPLEMENTACIÓN TÉCNICA:
+✓ Archivo: public/js/session-manager.js (12,285 bytes)
+✓ Líneas clave: 236-255 (countdown)
+✓ Event listeners: actividad del usuario
+✓ Reset timer: en cualquier interacción
+✓ Auto-logout: redirect a /login
+
+CARACTERÍSTICAS:
+✓ Timeout: 45 segundos de inactividad
+✓ Advertencia: Modal con countdown
+✓ Extensión: Botón para extender sesión
+✓ Auto-logout: Redirect automático
+✓ Activity tracking: mouse, keyboard, scroll
+✓ Cookie management: Aceptación/rechazo
+
+SEGURIDAD:
+✓ Session invalidation completa
+✓ Token CSRF regenerado
+✓ Cookies HttpOnly y Secure
+✓ Session fixation prevention
+✓ Logout completo (invalidate + forget)
+
+UX/UI:
+✓ Modal no-intrusivo
+✓ Countdown visual claro
+✓ Botón de extensión accesible
+✅ Mensajes claros y comprensibles
+✓ Animaciones suaves
+✓ Responsive design
+
+CONFIGURACIÓN:
+✓ Duración: 45 segundos (configurable)
+✓ Advertencia: 15 segundos antes
+✓ Countdown: 30 segundos visibles
+✓ Extensión: +30 segundos por click
+✓ Límite: Máximo 3 extensiones
+
+
+================================================================================
+                              FIN DE DOCUMENTACIÓN
+================================================================================
