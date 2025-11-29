@@ -188,9 +188,34 @@ async function abrirTrailer(titulo) {
         const data = await response.json();
         
         if (data.success && data.trailer_url) {
-            frame.src = data.trailer_url;
-            frame.style.display = 'block';
-            mediaContent.innerHTML = '';
+            // Si es HLS, usar video element con HLS.js
+            if (data.trailer_url.includes('.m3u8')) {
+                mediaContent.innerHTML = `
+                    <video id="trailerVideo" controls style="width: 100%; height: 400px;" autoplay muted>
+                        <source src="${data.trailer_url}" type="application/x-mpegURL">
+                        Tu navegador no soporta HLS streaming.
+                    </video>
+                `;
+                
+                // Cargar HLS.js si es necesario
+                if (!window.Hls) {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+                    script.onload = () => {
+                        loadHlsVideo(data.trailer_url);
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    loadHlsVideo(data.trailer_url);
+                }
+                
+                frame.style.display = 'none';
+            } else {
+                // Para otros formatos, usar iframe
+                frame.src = data.trailer_url;
+                frame.style.display = 'block';
+                mediaContent.innerHTML = '';
+            }
         } else {
             frame.style.display = 'none';
             mediaContent.innerHTML = '<p style="color: #dfe3e6; text-align: center;">No se encontró trailer disponible</p>';
@@ -199,6 +224,24 @@ async function abrirTrailer(titulo) {
         console.error('Error:', error);
         frame.style.display = 'none';
         mediaContent.innerHTML = '<p style="color: #dfe3e6; text-align: center;">Error al cargar el trailer</p>';
+    }
+}
+
+function loadHlsVideo(hlsUrl) {
+    const video = document.getElementById('trailerVideo');
+    if (video && window.Hls) {
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(hlsUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play();
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            // Safari soporte nativo
+            video.src = hlsUrl;
+            video.play();
+        }
     }
 }
 
