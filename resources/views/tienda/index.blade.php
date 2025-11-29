@@ -151,7 +151,7 @@
 </div>
 
 <!-- JavaScript de filtrado -->
-<script src="{{ asset('js/filtrado.js') }}"></script>
+<script src="{{ asset('js/filtrado.js') }}?v={{ time() }}"></script>
 
 <!-- JavaScript para desplegable personalizado -->
 <script>
