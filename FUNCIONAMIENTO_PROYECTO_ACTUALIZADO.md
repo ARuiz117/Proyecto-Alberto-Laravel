@@ -50,7 +50,7 @@
 Steam HRG implementa una arquitectura MVC clásica con Laravel 12:
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                        FRONTEND (VIEWS)                        │
+│                        FRONTEND (VIEWS)                         │
 ├─────────────────────────────────────────────────────────────────┤
 │ • Blade Templates (HTML + PHP)                                  │
 │ • CSS3 + JavaScript Vanilla                                     │
@@ -62,23 +62,23 @@ Steam HRG implementa una arquitectura MVC clásica con Laravel 12:
 ┌─────────────────────────────────────────────────────────────────┐
 │                    ROUTES (web.php)                             │
 ├─────────────────────────────────────────────────────────────────┤
-│ • GET /login → AuthController@showLogin                        │
+│ • GET /login → AuthController@showLogin                         │
 │ • POST /login → AuthController@login                            │
 │ • GET /tienda → TiendaController@index                          │
 │ • POST /carrito/add → CarritoController@add                     │
-│ • POST /stripe/checkout → StripeController@checkout           │
+│ • POST /stripe/checkout → StripeController@checkout             │
 └─────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼ Route to Controller
 ┌─────────────────────────────────────────────────────────────────┐
 │                   CONTROLLERS (Lógica)                          │
 ├─────────────────────────────────────────────────────────────────┤
-│ • AuthController: Login, registro, logout                      │
-│ • TiendaController: Catálogo, detalles, filtros                │
-│ • CarritoController: Add, remove, checkout                     │
+│ • AuthController: Login, registro, logout                       │
+│ • TiendaController: Catálogo, detalles, filtros                 │
+│ • CarritoController: Add, remove, checkout                      │
 │ • StripeController: Procesamiento de pagos                      │
-│ • BibliotecaController: Gestión de juegos comprados              │
-│ • AdminController: Panel de administración                     │
+│ • BibliotecaController: Gestión de juegos comprados             │
+│ • AdminController: Panel de administración                      │
 └─────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼ Database Operations
@@ -86,10 +86,10 @@ Steam HRG implementa una arquitectura MVC clásica con Laravel 12:
 │                      MODELS (Datos)                             │
 ├─────────────────────────────────────────────────────────────────┤
 │ • Usuario: auth, bibliotecas, carritos                          │
-│ • Juego: catálogo, detalles, reseñas                           │
-│ • Biblioteca: relación usuario-juego                           │
+│ • Juego: catálogo, detalles, reseñas                            │
+│ • Biblioteca: relación usuario-juego                            │
 │ • Carrito: items pendientes de compra                           │
-│ • Resena: valoraciones de usuarios                             │
+│ • Resena: valoraciones de usuarios                              │
 └─────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼ SQL Queries
@@ -97,7 +97,7 @@ Steam HRG implementa una arquitectura MVC clásica con Laravel 12:
 │                   DATABASE (MySQL)                              │
 ├─────────────────────────────────────────────────────────────────┤
 │ • usuarios: id, nombre, email, password, rol, saldo             │
-│ • juegos: id, titulo, precio, genero, descripcion, imagen_url  │
+│ • juegos: id, titulo, precio, genero, descripcion, imagen_url   │
 │ • bibliotecas: id, usuario_id, juego_id, fecha_compra           │
 │ • carritos: id, usuario_id, juego_id, cantidad                  │
 │ • reseñas: id, usuario_id, juego_id, estrellas, comentario      │
