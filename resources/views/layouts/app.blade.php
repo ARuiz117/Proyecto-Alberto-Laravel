@@ -177,8 +177,8 @@
             </div>
             <div class="tutorial-modal-body">
                 <div class="tutorial-video-container">
-                    <video controls style="width: 100%; max-width: 800px; height: auto;">
-                        <source src="https://rr4---sn-h5qzened.googlevideo.com/videoplayback?expire=1764436646&ei=hg4raeSTNrfcp-oPyKSG8AM&ip=146.158.139.61&id=2e9c3f9c8d4a3242&itag=22&source=contrib_service_notebooklm&begin=0&requiressl=yes&xpc=EghoqJzIP3oBAQ==&met=1764429446,&mh=fT&mm=32&mn=sn-h5qzened&ms=su&mv=m&mvi=4&pl=22&rms=su,su&sc=yes&susc=nblm&app=fife&ic=1045&eaua=49efLvKx0zY&pcm2=yes&mime=video/mp4&vprv=1&rqh=1&dur=436.558&lmt=1764421747175638&mt=1764429170&txp=0011224&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,susc,app,ic,eaua,pcm2,mime,vprv,rqh,dur,lmt&sig=AJfQdSswRgIhAMxYOdlcuuFrhHyWoJZ-hR7eR--S9CmaAw5NQVdXOjthAiEAnw_7e5HpsV7faWIgGZp3rsHtbKRdUY_gK0SXfInnAjA=&lsparams=met,mh,mm,mn,ms,mv,mvi,pl,rms,sc&lsig=APaTxxMwRQIhAMxa63q703lz8VQVAtZc0FpU45bwcfkYtj3LLgRsS9kkAiAH-pJmGlfv_SCDanVEpAuYA6evBUGt_Vu08LpUENELYA==" type="video/mp4">
+                    <video controls style="width: 100%; max-width: 800px; height: auto;" preload="auto">
+                        <source src="{{ asset('video/El_Viaje_de_un_Clic.mp4') }}" type="video/mp4">
                         Tu navegador no soporta video en HTML5.
                     </video>
                 </div>
