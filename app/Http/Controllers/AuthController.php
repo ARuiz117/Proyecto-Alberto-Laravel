@@ -9,6 +9,47 @@ use App\Models\Usuario;
 
 class AuthController extends Controller
 {
+    // Mostrar formulario de solicitud de recuperación de contraseña
+    public function showPasswordRequest()
+    {
+        return view('auth.password-request');
+    }
+
+    // Procesar solicitud y enviar correo al admin
+    public function sendPasswordRequest(Request $request)
+    {
+        $request->validate([
+            'usuario' => 'required|string',
+            'mensaje' => 'nullable|string',
+        ]);
+
+        // Buscar usuario por nombre o email (opcional, para que el admin tenga contexto)
+        $usuario = \App\Models\Usuario::where('nombre', $request->usuario)
+            ->orWhere('email', $request->usuario)
+            ->first();
+
+        $adminEmail = 'admin1@steamhrg.com';
+
+        $details = [
+            'usuario' => $request->usuario,
+            'mensaje' => $request->mensaje,
+            'usuario_encontrado' => $usuario ? $usuario->toArray() : null,
+        ];
+
+        \Mail::raw(
+            "Solicitud de recuperación de contraseña:\n" .
+            "Usuario o Email: {$details['usuario']}\n" .
+            ($usuario ? ("Usuario encontrado: ID {$usuario->id}, Nombre: {$usuario->nombre}, Email: {$usuario->email}\n") : "Usuario no encontrado\n") .
+            "Mensaje: {$details['mensaje']}\n",
+            function($message) use ($adminEmail) {
+                $message->to($adminEmail)
+                        ->subject('Solicitud de recuperación de contraseña');
+            }
+        );
+
+        return redirect()->route('password.request')->with('success', 'Solicitud enviada al administrador. Pronto se pondrán en contacto contigo.');
+    }
+
     // Mostrar formulario de login
     public function showLogin()
     {
@@ -142,5 +183,36 @@ class AuthController extends Controller
     public function showProfileHistory()
     {
         return view('auth.change-password');
+    }
+
+    // Mostrar formulario de soporte
+    public function showSoporte()
+    {
+        return view('soporte');
+    }
+
+    // Procesar envío de mensaje de soporte
+    public function sendSoporte(Request $request)
+    {
+        $request->validate([
+            'asunto' => 'required|string',
+            'mensaje' => 'required|string',
+        ]);
+
+        $adminEmail = 'admin1@steamhrg.com';
+        $user = Auth::user();
+
+        \Mail::raw(
+            "Mensaje de soporte:\n" .
+            "De: {$user->nombre} ({$user->email})\n" .
+            "Asunto: {$request->asunto}\n" .
+            "Mensaje: {$request->mensaje}\n",
+            function($message) use ($adminEmail) {
+                $message->to($adminEmail)
+                        ->subject('Mensaje de soporte - Steam HRG');
+            }
+        );
+
+        return redirect()->route('soporte.show')->with('success', 'Mensaje enviado correctamente. El equipo de soporte te responderá pronto.');
     }
 }

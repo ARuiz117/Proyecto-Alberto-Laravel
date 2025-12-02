@@ -31,7 +31,9 @@
         <input type="password" name="clave" placeholder="Clave" required class="form-input" />
         <button type="submit" class="btn btn-primary">Entrar</button>
     </form>
-    
+    <div style="text-align:center; margin-top:1rem;">
+        <a href="{{ route('password.request') }}" class="btn btn-secondary">¿Olvidaste tu contraseña?</a>
+    </div>
     <div class="register-section">
         <p class="register-text">¿No tienes cuenta?</p>
         <a href="{{ route('register') }}" class="btn btn-primary">Crear cuenta nueva</a>

@@ -53,6 +53,12 @@
                     </a>
                 </div>
             </nav>
+            <div class="nav-item">
+                <a href="{{ route('soporte.show') }}" class="nav-link {{ request()->routeIs('soporte.show') ? 'active' : '' }}">
+                    <i class='bx bx-support nav-icon'></i>
+                    Soporte
+                </a>
+            </div>
         </div>
 
         <!-- Contenido Dinámico del Perfil -->

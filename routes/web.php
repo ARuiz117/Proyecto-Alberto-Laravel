@@ -25,6 +25,10 @@ Route::get('/registro', [AuthController::class, 'showRegister'])->name('register
 Route::post('/registro', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Recuperación de contraseña simplificada
+Route::get('/password/request', [AuthController::class, 'showPasswordRequest'])->name('password.request');
+Route::post('/password/request', [AuthController::class, 'sendPasswordRequest'])->name('password.request.send');
+
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth')->group(function () {
     // Cambio de contraseña
@@ -34,6 +38,10 @@ Route::middleware('auth')->group(function () {
     // Perfil de usuario
     Route::get('/perfil/info', [AuthController::class, 'showProfileInfo'])->name('profile.info');
     Route::get('/perfil/historial', [AuthController::class, 'showProfileHistory'])->name('profile.history');
+
+    // Soporte
+    Route::get('/soporte', [AuthController::class, 'showSoporte'])->name('soporte.show');
+    Route::post('/soporte', [AuthController::class, 'sendSoporte'])->name('soporte.send');
     // Tienda
     Route::get('/tienda', [TiendaController::class, 'index'])->name('tienda.index');
     Route::get('/tienda/juego/{id}', [TiendaController::class, 'show'])->name('tienda.show');
