@@ -264,7 +264,7 @@ function confirmarDevolucion() {
     if (juegoIdADevolver) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/ProyectoAlberto-Steam-Laravel/public/biblioteca/devolver`;
+        form.action = '{{ route('biblioteca.devolver') }}';
         
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         

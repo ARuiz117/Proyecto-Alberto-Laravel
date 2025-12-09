@@ -180,7 +180,7 @@ function cerrarConfirmacionVaciarCarrito() {
 function confirmarVaciarCarrito() {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `/ProyectoAlberto-Steam-Laravel/public/carrito/vaciar`;
+    form.action = '{{ route('carrito.vaciar') }}';
     
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
@@ -280,7 +280,7 @@ function confirmarCompraSaldo() {
     if (datosCompraSaldo) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/ProyectoAlberto-Steam-Laravel/public/carrito/comprar`;
+        form.action = '{{ route('carrito.comprar') }}';
         
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         

@@ -64,7 +64,7 @@
                 </div>
             @endif
             <input type="file" id="imagen" name="imagen" accept="image/*">
-            <small>Formatos: JPG, PNG, GIF. Máximo 2MB. Dejar vacío para mantener la imagen actual.</small>
+            <small>Formatos: JPG, PNG, GIF, WebP. Máximo 2MB. Dejar vacío para mantener la imagen actual.</small>
         </div>
 
         <div class="form-actions">
