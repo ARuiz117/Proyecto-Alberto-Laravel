@@ -583,7 +583,7 @@ function confirmarEliminacion() {
     if (resenaIdAEliminar) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/ProyectoAlberto-Steam-Laravel/public/resena/${resenaIdAEliminar}`;
+        form.action = `{{ route('resena.destroy', ':id') }}`.replace(':id', resenaIdAEliminar);
         
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
