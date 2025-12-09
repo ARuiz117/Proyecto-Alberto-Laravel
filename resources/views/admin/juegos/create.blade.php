@@ -57,7 +57,7 @@
         <div class="form-group">
             <label for="imagen">Imagen del juego</label>
             <input type="file" id="imagen" name="imagen" accept="image/*" required>
-            <small>Formatos: JPG, PNG, GIF. Máximo 2MB</small>
+            <small>Formatos: JPG, PNG, GIF, WebP. Máximo 2MB</small>
         </div>
 
         <div class="form-actions">

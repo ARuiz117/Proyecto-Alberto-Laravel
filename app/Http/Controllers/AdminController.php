@@ -147,7 +147,7 @@ class AdminController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0',
             'genero' => 'required|string|in:Acción,Terror,RPG,Estrategia,Aventura,Deportes,Puzzle,Simulación',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $data = $request->only(['titulo', 'descripcion', 'genero']);
@@ -183,7 +183,7 @@ class AdminController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric|min:0',
             'genero' => 'required|string|in:Acción,Terror,RPG,Estrategia,Aventura,Deportes,Puzzle,Simulación',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         $data = $request->only(['titulo', 'descripcion', 'genero']);
